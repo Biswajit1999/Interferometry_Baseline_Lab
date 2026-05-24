@@ -51,6 +51,10 @@ python tools/projected_baseline_table.py
 python tools/validate_model.py
 ```
 
+## README Image Prompt
+
+A README hero image prompt is provided in [`docs/image_prompt.md`](docs/image_prompt.md). It focuses on baseline geometry, uv coverage, and interference fringes for a research-style banner.
+
 ## Limitations
 
 This first version is a geometric teaching model. It does not include full array geometry, antenna primary beams, visibility amplitudes, atmospheric phase noise, calibration errors, bandwidth smearing, or image reconstruction.
