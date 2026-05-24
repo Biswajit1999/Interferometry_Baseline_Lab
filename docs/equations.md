@@ -40,3 +40,18 @@ phase offset proportional to separation / theta
 ```
 
 This shows qualitative fringe sensitivity to angular separation, not calibrated visibility fitting.
+
+## Binary Complex Visibility
+
+For a two-point-source model with flux ratio `r = F2 / F1`, the normalised complex visibility is:
+
+```text
+V(u, v) = [1 + r exp(-2 pi i (u dx + v dy))] / (1 + r)
+```
+
+where `(dx, dy)` is the angular separation vector on the sky in radians. The browser reports:
+
+```text
+|V| = sqrt(Re(V)^2 + Im(V)^2)
+phase = atan2(Im(V), Re(V))
+```

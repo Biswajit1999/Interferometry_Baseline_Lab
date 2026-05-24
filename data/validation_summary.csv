@@ -3,3 +3,4 @@ baseline_doubling_resolution_ratio,0.5,0.5,True
 hour_angle_symmetry,0.0,0.0,True
 zero_declination_transit_projection,0.0,0.0,True
 rad_to_mas_constant,206264806.247,206264806.247,True
+binary_visibility_bounds,0.5384853074504403,0.37931034482758624 <= |V| <= 1,True

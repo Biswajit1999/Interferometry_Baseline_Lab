@@ -26,13 +26,21 @@
           <label>Baseline <output id="baselineOut">120 m</output><input id="baseline" type="range" min="5" max="1000" value="120" step="5"></label>
           <label>Wavelength <output id="wavelengthOut">1.65 um</output><input id="wavelength" type="range" min="0.4" max="21" value="1.65" step="0.05"></label>
           <label>Source separation <output id="separationOut">4.0 mas</output><input id="separation" type="range" min="0.1" max="50" value="4" step="0.1"></label>
+          <label>Position angle <output id="paOut">35 deg</output><input id="positionAngle" type="range" min="0" max="180" value="35" step="1"></label>
+          <label>Flux ratio <output id="fluxRatioOut">0.45</output><input id="fluxRatio" type="range" min="0" max="1" value="0.45" step="0.01"></label>
           <label>Hour angle <output id="hourOut">35 deg</output><input id="hour" type="range" min="-90" max="90" value="35" step="1"></label>
           <label>Declination <output id="decOut">20 deg</output><input id="dec" type="range" min="-70" max="70" value="20" step="1"></label>
         </aside>
 
         <section class="plots">
+          <article class="panel diagnostics">
+            <div><span>Spatial frequency</span><strong id="spatialFrequency">0 Mlambda</strong></div>
+            <div><span>Binary visibility</span><strong id="visibilityAmp">1.000</strong></div>
+            <div><span>Visibility phase</span><strong id="visibilityPhase">0.0 rad</strong></div>
+          </article>
           <article class="panel"><h2>Fringe Pattern</h2><canvas id="fringeCanvas" width="980" height="340"></canvas></article>
           <article class="panel"><h2>uv Coverage Sketch</h2><canvas id="uvCanvas" width="980" height="340"></canvas></article>
+          <article class="panel"><h2>Binary Visibility Amplitude</h2><canvas id="visibilityCanvas" width="980" height="300"></canvas></article>
         </section>
       </section>
     </main>

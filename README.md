@@ -29,13 +29,17 @@ where `H` is hour angle and `delta` is declination.
 ## Features
 
 - Baseline, wavelength, source separation, hour angle, and declination controls.
+- Binary-source position angle and flux-ratio controls.
 - Angular resolution and fringe spacing readouts.
 - Fringe pattern sketch.
 - uv coverage sketch with current projected sample.
+- Complex visibility amplitude and phase readouts.
+- Visibility-amplitude curve versus baseline length.
 
 ## Research Use Cases
 
 - Teaching how projected baseline, observing wavelength, and source geometry control interferometric resolution.
+- Demonstrating how binary-source separation and flux ratio modulate visibility amplitude.
 - Prototyping uv-track visualisations before adding real array configurations.
 - Generating synthetic baseline tables for plotting and dashboard experiments.
 - Building intuition for optical or radio interferometry before introducing calibrated complex visibilities.

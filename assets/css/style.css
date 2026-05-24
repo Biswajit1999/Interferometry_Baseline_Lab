@@ -36,6 +36,19 @@ label { display: grid; gap: .42rem; margin-bottom: 1rem; color: var(--muted); }
 output { color: var(--orange); float: right; }
 input { width: 100%; accent-color: var(--orange); }
 .plots { display: grid; gap: 1rem; }
+.diagnostics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: .75rem;
+}
+.diagnostics div {
+  padding: .8rem;
+  background: rgba(255,255,255,.035);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 8px;
+}
+.diagnostics span { display: block; color: var(--muted); font-size: .76rem; }
+.diagnostics strong { display: block; margin-top: .35rem; }
 canvas { display: block; width: 100%; height: auto; background: #0d1117; border-radius: 6px; }
 
 .site-footer {
@@ -47,5 +60,5 @@ canvas { display: block; width: 100%; height: auto; background: #0d1117; border-
 }
 
 @media (max-width: 920px) {
-  .layout, .summary { grid-template-columns: 1fr; }
+  .layout, .summary, .diagnostics { grid-template-columns: 1fr; }
 }
