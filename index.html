@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Interactive interferometry baseline and angular resolution laboratory.">
+    <title>Interferometry Baseline Lab</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+  </head>
+  <body>
+    <main class="app">
+      <header>
+        <p>Observational Astronomy Instrumentation</p>
+        <h1>Interferometry Baseline Lab</h1>
+      </header>
+
+      <section class="summary">
+        <div><span>Angular resolution</span><strong id="resolution">0.00 mas</strong></div>
+        <div><span>Fringe spacing</span><strong id="fringe">0.00 mas</strong></div>
+        <div><span>Projected baseline</span><strong id="projected">0 m</strong></div>
+      </section>
+
+      <section class="layout">
+        <aside class="panel">
+          <h2>Array Controls</h2>
+          <label>Baseline <output id="baselineOut">120 m</output><input id="baseline" type="range" min="5" max="1000" value="120" step="5"></label>
+          <label>Wavelength <output id="wavelengthOut">1.65 um</output><input id="wavelength" type="range" min="0.4" max="21" value="1.65" step="0.05"></label>
+          <label>Source separation <output id="separationOut">4.0 mas</output><input id="separation" type="range" min="0.1" max="50" value="4" step="0.1"></label>
+          <label>Hour angle <output id="hourOut">35 deg</output><input id="hour" type="range" min="-90" max="90" value="35" step="1"></label>
+          <label>Declination <output id="decOut">20 deg</output><input id="dec" type="range" min="-70" max="70" value="20" step="1"></label>
+        </aside>
+
+        <section class="plots">
+          <article class="panel"><h2>Fringe Pattern</h2><canvas id="fringeCanvas" width="980" height="340"></canvas></article>
+          <article class="panel"><h2>uv Coverage Sketch</h2><canvas id="uvCanvas" width="980" height="340"></canvas></article>
+        </section>
+      </section>
+    </main>
+    <script src="assets/js/app.js"></script>
+  </body>
+</html>
