@@ -1,12 +1,52 @@
 const ids = ["baseline", "wavelength", "separation", "positionAngle", "fluxRatio", "hour", "dec"];
 const input = Object.fromEntries(ids.map((id) => [id, document.getElementById(id)]));
+const scenarioSelect = document.getElementById("scenario");
 const label = {
-  baseline: document.getElementById("baselineOut"), wavelength: document.getElementById("wavelengthOut"), separation: document.getElementById("separationOut"), positionAngle: document.getElementById("paOut"), fluxRatio: document.getElementById("fluxRatioOut"), hour: document.getElementById("hourOut"), dec: document.getElementById("decOut"), resolution: document.getElementById("resolution"), fringe: document.getElementById("fringe"), projected: document.getElementById("projected"), spatialFrequency: document.getElementById("spatialFrequency"), visibilityAmp: document.getElementById("visibilityAmp"), visibilityPhase: document.getElementById("visibilityPhase"),
+  baseline: document.getElementById("baselineOut"),
+  wavelength: document.getElementById("wavelengthOut"),
+  separation: document.getElementById("separationOut"),
+  positionAngle: document.getElementById("paOut"),
+  fluxRatio: document.getElementById("fluxRatioOut"),
+  hour: document.getElementById("hourOut"),
+  dec: document.getElementById("decOut"),
+  resolution: document.getElementById("resolution"),
+  fringe: document.getElementById("fringe"),
+  projected: document.getElementById("projected"),
+  spatialFrequency: document.getElementById("spatialFrequency"),
+  visibilityAmp: document.getElementById("visibilityAmp"),
+  visibilityPhase: document.getElementById("visibilityPhase"),
+  scenarioName: document.getElementById("scenarioName"),
+  scenarioNote: document.getElementById("scenarioNote"),
+};
+
+// A scenario can carry real instrument-scale metadata without pretending that
+// this browser model contains archived complex visibilities or array layouts.
+const SCENARIOS = {
+  custom: {
+    name: "Custom synthetic two-element experiment",
+    note: "The binary sky, visibility, uv response, and fringe signal are generated in the browser. Change any slider to explore the analytic model.",
+    baseline: 120,
+    wavelength: 1.65,
+    hour: 35,
+    dec: 20,
+  },
+  "alma-long-baseline": {
+    name: "ALMA 2021 long-baseline scale",
+    note: "The 16 km baseline and 0.87 mm wavelength are representative of a documented ALMA long-baseline campaign. The binary sky, visibility, and response remain synthetic; no ALMA archive visibilities or R Lep coordinates are loaded.",
+    baseline: 16000,
+    wavelength: 870,
+    hour: 25,
+    dec: -20,
+  },
 };
 
 function val(id) { return Number(input[id].value); }
 function rad(deg) { return deg * Math.PI / 180; }
 function masFromRad(x) { return x * 206264806.247; }
+function formatDistance(metres) { return metres >= 1000 ? `${(metres / 1000).toFixed(2)} km` : `${metres.toFixed(0)} m`; }
+function formatWavelength(microns) { return microns >= 1000 ? `${(microns / 1000).toFixed(3)} mm` : `${microns.toFixed(2)} um`; }
+function activeScenario() { return SCENARIOS[scenarioSelect.value] ?? SCENARIOS.custom; }
+
 function setup(canvas) {
   const ratio = Math.min(window.devicePixelRatio || 1, 2);
   const width = Math.max(1, canvas.clientWidth);
@@ -60,7 +100,7 @@ function model() {
     track.push({ u: uvw.u / wavelengthM, v: uvw.v / wavelengthM, w: uvw.w / wavelengthM });
   }
   const maxUv = Math.max(1, ...track.flatMap((point) => [Math.abs(point.u), Math.abs(point.v)]));
-  return { baseline, wavelengthUm, wavelengthM, hour, dec, uvwM, uLambda, vLambda, wLambda, projected, resolutionMas, separationMas, pa, fluxRatio, visibility, track, maxUv };
+  return { baseline, wavelengthUm, wavelengthM, hour, dec, uvwM, uLambda, vLambda, wLambda, projected, resolutionMas, separationMas, pa, fluxRatio, visibility, track, maxUv, scenario: activeScenario() };
 }
 
 function drawGrid(ctx, width, height, pad, xLabel, yLabel) {
@@ -92,7 +132,7 @@ function drawFringes(m) {
   }
   ctx.stroke();
   ctx.fillStyle = "#ffb45c"; ctx.font = "12px ui-monospace, monospace";
-  ctx.fillText(`|V| = ${m.visibility.amplitude.toFixed(3)}  arg(V) = ${m.visibility.phase.toFixed(3)} rad`, pad.left, height - 18);
+  ctx.fillText(`synthetic binary: |V| = ${m.visibility.amplitude.toFixed(3)}  arg(V) = ${m.visibility.phase.toFixed(3)} rad`, pad.left, height - 18);
 }
 
 function drawUv(m) {
@@ -108,7 +148,7 @@ function drawUv(m) {
   plotTrack(1, "#5bd8ff", 2.2); plotTrack(-1, "rgba(91,216,255,.35)", 1.2);
   ctx.fillStyle = "#ffb45c"; ctx.beginPath(); ctx.arc(sx(m.uLambda), sy(m.vLambda), 5.5, 0, Math.PI * 2); ctx.fill();
   ctx.fillStyle = "#aab2c0"; ctx.font = "12px system-ui";
-  ctx.fillText(`east-west ENU baseline; source track: -6 h to +6 h; current w = ${(m.wLambda / 1e6).toFixed(2)} Mlambda`, pad.left, height - 16);
+  ctx.fillText(`east-west ENU model; source track: -6 h to +6 h; current w = ${(m.wLambda / 1e6).toFixed(2)} Mlambda`, pad.left, height - 16);
 }
 
 function pixelColour(value) {
@@ -129,7 +169,7 @@ function drawVisibilityAndBeam(m) {
   ctx.strokeStyle = "#5bd8ff"; ctx.lineWidth = 2.3; ctx.beginPath();
   for (let i = 0; i <= 220; i += 1) { const scale = i / 220; const vis = binaryVisibility(m.uLambda * scale * maxBaseline / m.baseline, m.vLambda * scale * maxBaseline / m.baseline, m.separationMas, m.pa, m.fluxRatio); const x = px(maxBaseline * scale); const y = py(vis.amplitude); if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y); }
   ctx.stroke(); ctx.fillStyle = "#ffb45c"; ctx.beginPath(); ctx.arc(px(m.baseline), py(m.visibility.amplitude), 5.5, 0, Math.PI * 2); ctx.fill();
-  ctx.fillStyle = "#aab2c0"; ctx.font = "12px system-ui"; ctx.fillText("binary visibility amplitude", pad.left, 18); ctx.fillText("baseline length (m)", split - 130, height - 14);
+  ctx.fillStyle = "#aab2c0"; ctx.font = "12px system-ui"; ctx.fillText("synthetic binary visibility amplitude", pad.left, 18); ctx.fillText("baseline length (m)", split - 130, height - 14);
 
   const n = 112; const image = ctx.createImageData(n, n); const samples = m.track.filter((_, i) => i % 3 === 0); const fieldRad = 5.5 / m.maxUv;
   for (let y = 0; y < n; y += 1) {
@@ -145,16 +185,36 @@ function drawVisibilityAndBeam(m) {
   const raw = document.createElement("canvas"); raw.width = n; raw.height = n; raw.getContext("2d").putImageData(image, 0, 0);
   const size = Math.min(height - 48, width - split - 26); const x0 = split + (width - split - size) / 2; const y0 = 24;
   ctx.imageSmoothingEnabled = false; ctx.drawImage(raw, x0, y0, size, size); ctx.strokeStyle = "rgba(255,255,255,.4)"; ctx.strokeRect(x0, y0, size, size);
-  ctx.fillStyle = "#aab2c0"; ctx.fillText("natural-weighted response", x0, 18); ctx.fillText(`plus/minus ${masFromRad(fieldRad).toFixed(2)} mas`, x0, height - 14);
+  ctx.fillStyle = "#aab2c0"; ctx.fillText("natural-weighted synthetic response", x0, 18); ctx.fillText(`plus/minus ${masFromRad(fieldRad).toFixed(2)} mas`, x0, height - 14);
+}
+
+function updateScenarioLabel() {
+  const scenario = activeScenario();
+  label.scenarioName.textContent = scenario.name;
+  label.scenarioNote.textContent = scenario.note;
 }
 
 function render() {
   const m = model();
-  label.baseline.textContent = `${m.baseline.toFixed(0)} m`; label.wavelength.textContent = `${m.wavelengthUm.toFixed(2)} um`; label.separation.textContent = `${m.separationMas.toFixed(1)} mas`; label.positionAngle.textContent = `${val("positionAngle").toFixed(0)} deg`; label.fluxRatio.textContent = m.fluxRatio.toFixed(2); label.hour.textContent = `${val("hour").toFixed(0)} deg`; label.dec.textContent = `${val("dec").toFixed(0)} deg`;
-  label.resolution.textContent = `${m.resolutionMas.toFixed(3)} mas`; label.fringe.textContent = `${m.resolutionMas.toFixed(3)} mas`; label.projected.textContent = `${m.projected.toFixed(1)} m`; label.spatialFrequency.textContent = `${(Math.hypot(m.uLambda, m.vLambda) / 1e6).toFixed(2)} Mlambda`; label.visibilityAmp.textContent = m.visibility.amplitude.toFixed(3); label.visibilityPhase.textContent = `${m.visibility.phase.toFixed(3)} rad`;
+  updateScenarioLabel();
+  label.baseline.textContent = formatDistance(m.baseline); label.wavelength.textContent = formatWavelength(m.wavelengthUm); label.separation.textContent = `${m.separationMas.toFixed(1)} mas`; label.positionAngle.textContent = `${val("positionAngle").toFixed(0)} deg`; label.fluxRatio.textContent = m.fluxRatio.toFixed(2); label.hour.textContent = `${val("hour").toFixed(0)} deg`; label.dec.textContent = `${val("dec").toFixed(0)} deg`;
+  label.resolution.textContent = `${m.resolutionMas.toFixed(3)} mas`; label.fringe.textContent = `${m.resolutionMas.toFixed(3)} mas`; label.projected.textContent = formatDistance(m.projected); label.spatialFrequency.textContent = `${(Math.hypot(m.uLambda, m.vLambda) / 1e6).toFixed(2)} Mlambda`; label.visibilityAmp.textContent = m.visibility.amplitude.toFixed(3); label.visibilityPhase.textContent = `${m.visibility.phase.toFixed(3)} rad`;
   drawFringes(m); drawUv(m); drawVisibilityAndBeam(m);
 }
 
-ids.forEach((id) => input[id].addEventListener("input", render));
+function loadScenario(key) {
+  const scenario = SCENARIOS[key] ?? SCENARIOS.custom;
+  input.baseline.value = String(scenario.baseline);
+  input.wavelength.value = String(scenario.wavelength);
+  input.hour.value = String(scenario.hour);
+  input.dec.value = String(scenario.dec);
+  render();
+}
+
+scenarioSelect.addEventListener("change", () => loadScenario(scenarioSelect.value));
+ids.forEach((id) => input[id].addEventListener("input", () => {
+  if (scenarioSelect.value !== "custom") scenarioSelect.value = "custom";
+  render();
+}));
 window.addEventListener("resize", render);
 render();
