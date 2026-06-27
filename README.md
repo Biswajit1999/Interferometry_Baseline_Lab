@@ -1,67 +1,65 @@
 # Interferometry Baseline Lab
 
-Interactive laboratory for angular resolution, projected baselines, fringe spacing, and uv coverage intuition.
+Interactive two-element interferometry laboratory for angular resolution, projected east-west baselines, Earth-rotation `u,v,w` tracks, complex binary visibility, and the response of incomplete Fourier sampling.
 
 **Author:** Biswajit Jana
 
 ## Research Motivation
 
-Interferometry converts separated telescopes or antennas into a synthetic aperture. The resolving power depends on wavelength and projected baseline, while Earth rotation changes the sampled uv plane. This project provides a compact visual tool for understanding those relationships.
+Interferometry turns separated collectors into a synthetic aperture. The angular scale depends on wavelength and the **source-projected** baseline, while Earth rotation changes the Fourier coordinates sampled by a fixed ground baseline. This laboratory makes that connection explicit for a narrow-field, two-element teaching model.
 
 ## Model
 
-The nominal interferometric fringe spacing is:
+The nominal fringe spacing is
 
 ```text
 theta ~= lambda / B_projected
 ```
 
-where `lambda` is observing wavelength and `B_projected` is the source-projected baseline. The simulator uses a simplified projected baseline:
+The current browser model uses one horizontal east-west baseline. For hour angle `H`, declination `delta`, and wavelength `lambda`, its source-frame coordinates are
 
 ```text
 u = B sin(H) / lambda
 v = -B sin(delta) cos(H) / lambda
-B_projected = lambda sqrt(u^2 + v^2)
+w = B cos(delta) cos(H) / lambda
 ```
 
-where `H` is hour angle and `delta` is declination.
+The `uv` panel draws the Earth-rotation track from `-6 h` to `+6 h` and its Hermitian-conjugate counterpart. For a binary with flux ratio `r` and separation `(dx, dy)`, the complex visibility is
+
+```text
+V(u, v) = [1 + r exp(-2 pi i (u dx + v dy))] / (1 + r)
+```
+
+The response map is a direct natural-weighted Fourier sum of the sampled track. It is a view of the instrument response to incomplete coverage, not a calibrated dirty image, CLEAN reconstruction, or sky measurement.
 
 ## Features
 
-- Baseline, wavelength, source separation, hour angle, and declination controls.
-- Binary-source position angle and flux-ratio controls.
-- Angular resolution and fringe spacing readouts.
-- Fringe pattern sketch.
-- uv coverage sketch with current projected sample.
-- Complex visibility amplitude and phase readouts.
-- Visibility-amplitude curve versus baseline length.
-
-## Research Use Cases
-
-- Teaching how projected baseline, observing wavelength, and source geometry control interferometric resolution.
-- Demonstrating how binary-source separation and flux ratio modulate visibility amplitude.
-- Prototyping uv-track visualisations before adding real array configurations.
-- Generating synthetic baseline tables for plotting and dashboard experiments.
-- Building intuition for optical or radio interferometry before introducing calibrated complex visibilities.
+- Horizontal east-west baseline, wavelength, source separation, hour-angle, and declination controls.
+- Projected baseline, spatial frequency, complex visibility amplitude, and phase readouts.
+- Earth-rotation `uv` track plus the Hermitian-conjugate coverage.
+- Correlated fringe signal generated from the binary complex visibility.
+- Binary visibility curve versus baseline scale.
+- Natural-weighted sampling response derived from the same track.
+- Deterministic `u,v,w` limit check in `tools/validate_uvw.js`.
 
 ## Running Locally
 
-Open `index.html` in a browser.
+Open `index.html` in a modern browser.
 
-Optional Python table generation and validation:
+Run the analytic convention check with:
 
 ```bash
-python tools/projected_baseline_table.py
-python tools/validate_model.py
+node tools/validate_uvw.js
 ```
-
-## README Image Prompt
-
-A README hero image prompt is provided in [`docs/image_prompt.md`](docs/image_prompt.md). It focuses on baseline geometry, uv coverage, and interference fringes for a research-style banner.
 
 ## Limitations
 
-This first version is a geometric teaching model. It does not include full array geometry, antenna primary beams, visibility amplitudes, atmospheric phase noise, calibration errors, bandwidth smearing, or image reconstruction.
+This is an educational two-element, narrow-field model.
+
+- The ground baseline is fixed to horizontal east-west orientation; it does not yet include real multi-antenna array layouts.
+- The sampling response has no primary beam, visibility weighting options, noise, calibration errors, gridding kernel, bandwidth synthesis, or deconvolution.
+- The `w` coordinate is reported but a wide-field measurement equation and `w`-projection are not implemented.
+- It does not model atmospheric phase noise, delay tracking, closure quantities, or observatory-specific metadata.
 
 ## Research References
 
@@ -72,11 +70,11 @@ This first version is a geometric teaching model. It does not include full array
 
 ## Future Upgrades
 
-- Add multiple baselines and real array presets.
-- Add visibility amplitude for binary sources.
-- Add Fourier-plane sampling and dirty beam visualisation.
-- Add Python notebook for uv-track generation.
-- Add CHARA, VLTI, ALMA, and VLA-inspired educational presets with citations.
+- Add arbitrary ENU baseline vectors and multiple real-array-inspired presets.
+- Add a small-field versus wide-field `w`-term comparison.
+- Add primary beams, calibration/noise models, and multi-frequency tracks.
+- Add a separately labelled toy deconvolution after a gridded response image exists.
+- Cross-check sampled visibilities against a Python Fourier reference.
 
 ## Topics
 
