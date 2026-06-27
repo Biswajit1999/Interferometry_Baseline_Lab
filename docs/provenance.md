@@ -12,16 +12,16 @@ w = B cos(delta) cos(H) / lambda
 
 The complex binary visibility, correlated fringe trace, Earth-rotation uv track, and natural-weighted response are all generated from those values at render time. They are not imported measurements.
 
-## Scenario: ALMA 2021 long-baseline scale
+## Scenario: ALMA 2021 high-frequency long-baseline scale
 
-The `ALMA 2021 long-baseline scale` preset uses:
+The `ALMA 2021 high-frequency long-baseline scale` preset uses:
 
 ```text
 maximum baseline = 16 km
-representative wavelength = 0.87 mm
+representative wavelength = 0.75 mm
 ```
 
-Those values are a compact instrumental-scale reference to the ALMA high-frequency long-baseline campaign reported by Asaki et al. (2023), *ALMA High-frequency Long Baseline Campaign in 2021: Highest Angular Resolution Submillimeter Wave Images for the Carbon-rich Star R Lep*, arXiv:2310.09664. The paper describes observations in Bands 8--10 with baselines up to 16 km.
+Those values are a compact instrumental-scale reference to the ALMA high-frequency long-baseline campaign reported by Asaki et al. (2023), *ALMA High-frequency Long Baseline Campaign in 2021: Highest Angular Resolution Submillimeter Wave Images for the Carbon-rich Star R Lep*, arXiv:2310.09664. The paper describes observations in Bands 8--10 at 397--908 GHz, with baselines up to 16 km. The chosen 0.75 mm reference lies at the low-frequency edge of that high-frequency range.
 
 The preset does **not** contain ALMA archive visibilities, a real ALMA antenna layout, calibrated phase solutions, or the sky coordinates of R Lep. It only provides a real-world scale for the browser's analytic two-element model.
 
