@@ -34,7 +34,7 @@ The response map is a direct natural-weighted Fourier sum of the sampled track. 
 
 ## Provenance-aware scenario
 
-The interface includes an `ALMA 2021 long-baseline scale` scenario. It sets a `16 km` baseline and `0.87 mm` representative wavelength from a documented ALMA long-baseline campaign. It does **not** load a real ALMA antenna layout, a calibrated ALMA measurement set, archived visibilities, or R Lep coordinates. The source and every plotted visibility remain synthetic.
+The interface includes an `ALMA 2021 high-frequency long-baseline scale` scenario. It sets a `16 km` baseline and a representative `0.75 mm` wavelength, aligned with the 397--908 GHz high-frequency range reported for the 2021 ALMA campaign. It does **not** load a real ALMA antenna layout, a calibrated ALMA measurement set, archived visibilities, or R Lep coordinates. The source and every plotted visibility remain synthetic.
 
 Changing any slider automatically returns to `Custom synthetic two-element experiment`, preventing the preset label from being mistaken for an unmodified observatory setup. See [`docs/provenance.md`](docs/provenance.md) for the model/data boundary and bibliographic source.
 
@@ -57,6 +57,7 @@ Open `index.html` in a modern browser.
 Run the analytic convention checks with:
 
 ```bash
+node --check assets/js/app.js
 node tools/validate_uvw.js
 node tools/validate_scenarios.js
 ```
