@@ -23,7 +23,7 @@
       <section class="layout">
         <aside class="panel">
           <h2>Array Controls</h2>
-          <label>Baseline <output id="baselineOut">120 m</output><input id="baseline" type="range" min="5" max="1000" value="120" step="5"></label>
+          <label>East west baseline <output id="baselineOut">120 m</output><input id="baseline" type="range" min="5" max="1000" value="120" step="5"></label>
           <label>Wavelength <output id="wavelengthOut">1.65 um</output><input id="wavelength" type="range" min="0.4" max="21" value="1.65" step="0.05"></label>
           <label>Source separation <output id="separationOut">4.0 mas</output><input id="separation" type="range" min="0.1" max="50" value="4" step="0.1"></label>
           <label>Position angle <output id="paOut">35 deg</output><input id="positionAngle" type="range" min="0" max="180" value="35" step="1"></label>
@@ -38,9 +38,9 @@
             <div><span>Binary visibility</span><strong id="visibilityAmp">1.000</strong></div>
             <div><span>Visibility phase</span><strong id="visibilityPhase">0.0 rad</strong></div>
           </article>
-          <article class="panel"><h2>Fringe Pattern</h2><canvas id="fringeCanvas" width="980" height="340"></canvas></article>
-          <article class="panel"><h2>uv Coverage Sketch</h2><canvas id="uvCanvas" width="980" height="340"></canvas></article>
-          <article class="panel"><h2>Binary Visibility Amplitude</h2><canvas id="visibilityCanvas" width="980" height="300"></canvas></article>
+          <article class="panel"><h2>Correlated Fringe Signal</h2><canvas id="fringeCanvas" width="980" height="340"></canvas></article>
+          <article class="panel"><h2>Earth Rotation uv Track</h2><canvas id="uvCanvas" width="980" height="340"></canvas></article>
+          <article class="panel"><h2>Binary Visibility and Sampling Response</h2><canvas id="visibilityCanvas" width="980" height="300"></canvas></article>
         </section>
       </section>
     </main>
