@@ -16,6 +16,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Parse browser application
+        run: node --check assets/js/app.js
       - name: Validate east-west uvw limits
         run: node tools/validate_uvw.js
       - name: Validate provenance scenario scale
