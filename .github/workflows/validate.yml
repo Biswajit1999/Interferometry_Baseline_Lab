@@ -1,0 +1,22 @@
+name: Validate interferometry model
+
+on:
+  push:
+    branches: [upgrade-v2]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  analytic-guards:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate east-west uvw limits
+        run: node tools/validate_uvw.js
+      - name: Validate provenance scenario scale
+        run: node tools/validate_scenarios.js
