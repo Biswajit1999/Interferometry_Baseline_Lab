@@ -1,61 +1,37 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Interactive two-element interferometry laboratory for projected baselines, Earth-rotation uv tracks, complex binary visibility, and provenance-aware instrument scenarios.">
-    <title>Interferometry Baseline Lab</title>
-    <link rel="stylesheet" href="assets/css/style.css">
-  </head>
-  <body>
-    <main class="app">
-      <header>
-        <p>Observational Astronomy Instrumentation</p>
-        <h1>Interferometry Baseline Lab</h1>
-      </header>
-
-      <section class="summary">
-        <div><span>Angular resolution</span><strong id="resolution">0.00 mas</strong></div>
-        <div><span>Fringe spacing</span><strong id="fringe">0.00 mas</strong></div>
-        <div><span>Projected baseline</span><strong id="projected">0 m</strong></div>
-      </section>
-
-      <section class="layout">
-        <aside class="panel">
-          <h2>Array Controls</h2>
-          <label>Instrument scenario
-            <select id="scenario" class="select">
-              <option value="custom">Custom synthetic two-element experiment</option>
-              <option value="alma-long-baseline">ALMA 2021 high-frequency long-baseline scale</option>
-            </select>
-          </label>
-          <div class="provenance" aria-live="polite">
-            <span class="provenance__label">Provenance</span>
-            <strong id="scenarioName">Custom synthetic two-element experiment</strong>
-            <p id="scenarioNote">The binary sky, visibility, uv response, and fringe signal are generated in the browser.</p>
-          </div>
-          <label>East-west baseline <output id="baselineOut">120 m</output><input id="baseline" type="range" min="5" max="16000" value="120" step="5"></label>
-          <label>Wavelength <output id="wavelengthOut">1.65 um</output><input id="wavelength" type="range" min="0.4" max="1000" value="1.65" step="0.05"></label>
-          <label>Source separation <output id="separationOut">4.0 mas</output><input id="separation" type="range" min="0.1" max="50" value="4" step="0.1"></label>
-          <label>Position angle <output id="paOut">35 deg</output><input id="positionAngle" type="range" min="0" max="180" value="35" step="1"></label>
-          <label>Flux ratio <output id="fluxRatioOut">0.45</output><input id="fluxRatio" type="range" min="0" max="1" value="0.45" step="0.01"></label>
-          <label>Hour angle <output id="hourOut">35 deg</output><input id="hour" type="range" min="-90" max="90" value="35" step="1"></label>
-          <label>Declination <output id="decOut">20 deg</output><input id="dec" type="range" min="-70" max="70" value="20" step="1"></label>
-        </aside>
-
-        <section class="plots">
-          <article class="panel diagnostics">
-            <div><span>Spatial frequency</span><strong id="spatialFrequency">0 Mlambda</strong></div>
-            <div><span>Binary visibility</span><strong id="visibilityAmp">1.000</strong></div>
-            <div><span>Visibility phase</span><strong id="visibilityPhase">0.0 rad</strong></div>
-          </article>
-          <article class="panel"><h2>Correlated Fringe Signal</h2><canvas id="fringeCanvas" width="980" height="340"></canvas></article>
-          <article class="panel"><h2>Earth-Rotation uv Track</h2><canvas id="uvCanvas" width="980" height="340"></canvas></article>
-          <article class="panel"><h2>Binary Visibility and Sampling Response</h2><canvas id="visibilityCanvas" width="980" height="300"></canvas></article>
-        </section>
-      </section>
-    </main>
-    <footer class="site-footer">Interferometry Baseline Lab · Biswajit Jana · 2026</footer>
-    <script src="assets/js/app.js"></script>
-  </body>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Interferometry Baseline Lab</title><link rel="stylesheet" href="assets/css/style.css"></head>
+<body>
+<main class="app">
+<header><p>Observational Astronomy Instrumentation</p><h1>Interferometry Baseline Lab</h1></header>
+<section class="summary"><div><span>Angular resolution</span><strong id="resolution">0.00 mas</strong></div><div><span>Fringe spacing</span><strong id="fringe">0.00 mas</strong></div><div><span>Selected projected baseline</span><strong id="projected">0 m</strong></div><div><span>Array baselines</span><strong id="baselineCount">0 pairs</strong></div></section>
+<section class="layout">
+<aside class="panel">
+<h2>Array and Scenario</h2>
+<label>Instrument scale<select id="scenario" class="select"><option value="custom">Custom synthetic synthesis experiment</option><option value="alma-scale">ALMA long baseline scale experiment</option></select></label>
+<div class="provenance"><span class="provenance__label">Provenance</span><strong id="scenarioName">Custom synthetic synthesis experiment</strong><p id="scenarioNote">The source, coverage and response are generated from the analytic model.</p></div>
+<label>Geometry preset<select id="arrayPreset" class="select"><option value="ew2">Two collector east west</option><option value="l3">Three collector L layout</option><option value="y4">Four collector Y layout</option></select></label>
+<div class="provenance"><span class="provenance__label">Geometry boundary</span><strong id="arrayName">One horizontal east west baseline.</strong></div>
+<canvas id="arrayCanvas" width="480" height="300"></canvas>
+<h2>Observation Controls</h2>
+<label>Array scale B <output id="baselineOut">120 m</output><input id="baseline" type="range" min="5" max="16000" value="120" step="5"></label>
+<label>Wavelength <output id="wavelengthOut">1.65 um</output><input id="wavelength" type="range" min="0.4" max="1000" value="1.65" step="0.05"></label>
+<label>Source separation <output id="separationOut">4.0 mas</output><input id="separation" type="range" min="0.1" max="50" value="4" step="0.1"></label>
+<label>Position angle <output id="paOut">35 deg</output><input id="positionAngle" type="range" min="0" max="180" value="35" step="1"></label>
+<label>Flux ratio <output id="fluxRatioOut">0.45</output><input id="fluxRatio" type="range" min="0" max="1" value="0.45" step="0.01"></label>
+<label>Current hour angle <output id="hourOut">2.3 h</output><input id="hour" type="range" min="-180" max="180" value="35" step="1"></label>
+<label>Declination <output id="decOut">20 deg</output><input id="dec" type="range" min="-70" max="70" value="20" step="1"></label>
+<label>Synthesis half span <output id="trackOut">6.0 h</output><input id="trackHours" type="range" min="0.5" max="12" value="6" step="0.5"></label>
+</aside>
+<section class="plots">
+<article class="panel diagnostics"><div><span>Spatial frequency</span><strong id="spatialFrequency">0 Mlambda</strong></div><div><span>Binary visibility</span><strong id="visibilityAmp">1.000</strong></div><div><span>Visibility phase</span><strong id="visibilityPhase">0.0 rad</strong></div><div><span>u coordinate</span><strong id="uReadout">0 Mlambda</strong></div><div><span>v coordinate</span><strong id="vReadout">0 Mlambda</strong></div><div><span>w coordinate</span><strong id="wReadout">0 Mlambda</strong></div></article>
+<article class="panel"><h2>Correlated Fringe Signal</h2><canvas id="fringeCanvas" width="980" height="340"></canvas></article>
+<article class="panel"><h2>Earth Rotation uv Coverage</h2><canvas id="uvCanvas" width="980" height="420"></canvas></article>
+<article class="panel"><h2>Binary Visibility and Sampling Response</h2><canvas id="visibilityCanvas" width="980" height="300"></canvas></article>
+</section>
+</section>
+</main>
+<footer class="site-footer">Interferometry Baseline Lab - Biswajit Jana - 2026</footer>
+<script src="assets/js/array-synthesis.js"></script>
+</body>
 </html>
