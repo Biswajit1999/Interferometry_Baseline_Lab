@@ -24,7 +24,7 @@ header p { color: var(--orange); font-size: .78rem; font-weight: 800; text-trans
 h1 { margin: 0; font-size: clamp(2.1rem, 5vw, 4.5rem); line-height: .96; }
 h2 { margin: 0 0 1rem; font-size: 1rem; }
 
-.summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: .75rem; margin-bottom: 1rem; }
+.summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); gap: .75rem; margin-bottom: 1rem; }
 .summary div, .panel { background: rgba(26,29,36,.94); border: 1px solid rgba(255,255,255,.1); border-radius: 8px; }
 .summary div { padding: .9rem; }
 .summary span { display: block; color: var(--muted); font-size: .76rem; }
@@ -63,11 +63,7 @@ input, .select { width: 100%; accent-color: var(--orange); }
 .provenance strong { display: block; margin-top: .25rem; font-size: .84rem; }
 .provenance p { margin: .35rem 0 0; color: var(--muted); font-size: .75rem; line-height: 1.45; }
 .plots { display: grid; gap: 1rem; }
-.diagnostics {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: .75rem;
-}
+.diagnostics { display: grid; grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr)); gap: .75rem; }
 .diagnostics div {
   padding: .8rem;
   background: rgba(255,255,255,.035);
@@ -87,5 +83,5 @@ canvas { display: block; width: 100%; height: auto; background: #0d1117; border-
 }
 
 @media (max-width: 920px) {
-  .layout, .summary, .diagnostics { grid-template-columns: 1fr; }
+  .layout, .diagnostics { grid-template-columns: 1fr; }
 }
