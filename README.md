@@ -1,92 +1,74 @@
 # Interferometry Baseline Lab
 
-Interactive two-element interferometry laboratory for angular resolution, projected east-west baselines, Earth-rotation `u,v,w` tracks, complex binary visibility, incomplete Fourier sampling, and clearly labelled instrument-scale scenarios.
+Interactive synthesis-interferometry laboratory for ENU array geometry, projected baselines, Earth-rotation uvw coverage, complex binary visibility, and the response from incomplete Fourier sampling.
 
 **Author:** Biswajit Jana
 
-## Research Motivation
+## Purpose
 
-Interferometry turns separated collectors into a synthetic aperture. The angular scale depends on wavelength and the **source-projected** baseline, while Earth rotation changes the Fourier coordinates sampled by a fixed ground baseline. This laboratory makes that connection explicit for a narrow-field, two-element teaching model.
+The laboratory makes the source-projected nature of angular resolution explicit. A fixed ground array samples different Fourier coordinates as the source hour angle changes. It is an educational, narrow-field model, not a calibrated imaging pipeline.
 
-## Model
+## Array model
 
-The nominal fringe spacing is
+Choose among three idealised local ENU layouts:
+
+- two-collector east-west pair;
+- three-collector L layout;
+- four-collector Y layout.
+
+They are synthetic teaching geometries, not reproductions of an observatory configuration. For an antenna-pair vector `(B_E, B_N, B_U)`, hour angle `H`, declination `delta`, and wavelength `lambda`, the code uses
 
 ```text
-theta ~= lambda / B_projected
+u = [B_E sin(H) + B_N cos(H)] / lambda
+v = [-B_E sin(delta) cos(H) + B_N sin(delta) sin(H) + B_U cos(delta)] / lambda
+w = [B_E cos(delta) cos(H) - B_N cos(delta) sin(H) + B_U sin(delta)] / lambda
 ```
 
-The browser model uses one horizontal east-west baseline. For hour angle `H`, declination `delta`, and wavelength `lambda`, its source-frame coordinates are
+Every pair contributes an Earth-rotation track and Hermitian counterpart to the coverage display. The pair with the largest projected baseline supplies the single fringe and binary-visibility readout.
 
-```text
-u = B sin(H) / lambda
-v = -B sin(delta) cos(H) / lambda
-w = B cos(delta) cos(H) / lambda
-```
-
-The `uv` panel draws the Earth-rotation track from `-6 h` to `+6 h` and its Hermitian-conjugate counterpart. For a binary with flux ratio `r` and separation `(dx, dy)`, the complex visibility is
+For a binary source with flux ratio `r` and angular separation vector `(dx, dy)`, the complex visibility is
 
 ```text
 V(u, v) = [1 + r exp(-2 pi i (u dx + v dy))] / (1 + r)
 ```
 
-The response map is a direct natural-weighted Fourier sum of the sampled track. It is a view of the instrument response to incomplete coverage, not a calibrated dirty image, CLEAN reconstruction, or sky measurement.
-
-## Provenance-aware scenario
-
-The interface includes an `ALMA 2021 high-frequency long-baseline scale` scenario. It sets a `16 km` baseline and a representative `0.75 mm` wavelength, aligned with the 397--908 GHz high-frequency range reported for the 2021 ALMA campaign. It does **not** load a real ALMA antenna layout, a calibrated ALMA measurement set, archived visibilities, or R Lep coordinates. The source and every plotted visibility remain synthetic.
-
-Changing any slider automatically returns to `Custom synthetic two-element experiment`, preventing the preset label from being mistaken for an unmodified observatory setup. See [`docs/provenance.md`](docs/provenance.md) for the model/data boundary and bibliographic source.
+The sampling-response panel is a naturally weighted real Fourier sum over all selected tracks. It is an instrumental response function, not a reconstructed sky image.
 
 ## Features
 
-- Horizontal east-west baseline, wavelength, source separation, hour-angle, and declination controls.
-- Custom synthetic and ALMA-scale scenario selection with an on-page provenance banner.
-- Projected baseline, spatial frequency, complex visibility amplitude, and phase readouts.
-- Earth-rotation `uv` track plus the Hermitian-conjugate coverage.
-- Correlated fringe signal generated from the binary complex visibility.
-- Binary visibility curve versus baseline scale.
-- Natural-weighted sampling response derived from the same track.
-- Deterministic `u,v,w` limit check in `tools/validate_uvw.js`.
-- Deterministic scenario metadata check in `tools/validate_scenarios.js`.
+- Idealised two, three, and four-collector array presets.
+- Local east-north array-layout diagram.
+- ENU to uvw projection for every baseline pair.
+- Adjustable hour-angle synthesis span.
+- uv coverage and Hermitian counterparts.
+- Projected resolution, spatial frequency, complex binary visibility, and phase.
+- Correlated fringe signal from the selected longest projected baseline.
+- Natural-weighted sampling response from all selected tracks.
+- Clearly labelled synthetic ALMA-scale scenario.
 
-## Running Locally
+## Run and validate
 
 Open `index.html` in a modern browser.
 
-Run the analytic convention checks with:
-
 ```bash
-node --check assets/js/app.js
-node tools/validate_uvw.js
-node tools/validate_scenarios.js
+node tools/validate_arrays.js
 ```
 
-## Limitations
+The check verifies ENU projection limits and the expected pair counts: 2 collectors give 1 baseline, 3 give 3, and 4 give 6.
 
-This is an educational two-element, narrow-field model.
+## Model boundaries
 
-- The ground baseline is fixed to horizontal east-west orientation; it does not yet include real multi-antenna array layouts.
-- The ALMA-scale scenario is an instrument-scale reference, not real interferometric data.
-- The sampling response has no primary beam, visibility weighting options, noise, calibration errors, gridding kernel, bandwidth synthesis, or deconvolution.
-- The `w` coordinate is reported but a wide-field measurement equation and `w`-projection are not implemented.
-- It does not model atmospheric phase noise, delay tracking, closure quantities, or observatory-specific metadata.
+- No primary beam, thermal noise, calibration/gain errors, atmospheric phase error, delay tracking, gridding kernel, bandwidth synthesis, or deconvolution.
+- The response panel is not a dirty image or a CLEAN reconstruction.
+- The `w` coordinate is calculated and reported but no wide-field `w` correction is applied.
+- The binary source and all layouts are synthetic.
+- The ALMA scale preset is a documented scale comparison only; it is not an ALMA archive-data client.
 
-## Research References
+## References
 
-- Thompson, Moran & Swenson, *Interferometry and Synthesis in Radio Astronomy*.
-- Monnier, 2003, *Optical interferometry in astronomy*.
-- Taylor, Carilli & Perley, 1999, *Synthesis Imaging in Radio Astronomy II*.
-- Asaki et al., 2023, *ALMA High-frequency Long Baseline Campaign in 2021: Highest Angular Resolution Submillimeter Wave Images for the Carbon-rich Star R Lep*, arXiv:2310.09664.
-- van Cittert-Zernike theorem literature connecting sky brightness and complex visibility.
-
-## Future Upgrades
-
-- Add arbitrary ENU baseline vectors and real-array layout files with a separate data licence/provenance record.
-- Add a small-field versus wide-field `w`-term comparison.
-- Add primary beams, calibration/noise models, and multi-frequency tracks.
-- Add a separately labelled toy deconvolution after a gridded response image exists.
-- Cross-check sampled visibilities against a Python Fourier reference.
+- Thompson, Moran and Swenson, Interferometry and Synthesis in Radio Astronomy.
+- Monnier, 2003, Optical interferometry in astronomy.
+- Taylor, Carilli and Perley, Synthesis Imaging in Radio Astronomy II.
 
 ## Topics
 
