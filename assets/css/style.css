@@ -24,7 +24,7 @@ header p { color: var(--orange); font-size: .78rem; font-weight: 800; text-trans
 h1 { margin: 0; font-size: clamp(2.1rem, 5vw, 4.5rem); line-height: .96; }
 h2 { margin: 0 0 1rem; font-size: 1rem; }
 
-.summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: .75rem; margin-bottom: 1rem; }
+.summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); gap: .75rem; margin-bottom: 1rem; }
 .summary div, .panel { background: rgba(26,29,36,.94); border: 1px solid rgba(255,255,255,.1); border-radius: 8px; }
 .summary div { padding: .9rem; }
 .summary span { display: block; color: var(--muted); font-size: .76rem; }
@@ -34,13 +34,36 @@ h2 { margin: 0 0 1rem; font-size: 1rem; }
 .panel { padding: 1rem; overflow: hidden; }
 label { display: grid; gap: .42rem; margin-bottom: 1rem; color: var(--muted); }
 output { color: var(--orange); float: right; }
-input { width: 100%; accent-color: var(--orange); }
-.plots { display: grid; gap: 1rem; }
-.diagnostics {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: .75rem;
+input, .select { width: 100%; accent-color: var(--orange); }
+.select {
+  appearance: none;
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 6px;
+  background: rgba(255,255,255,.04);
+  color: var(--text);
+  font: inherit;
+  padding: .55rem .65rem;
 }
+.provenance {
+  margin: -.2rem 0 1rem;
+  padding: .7rem .75rem;
+  border: 1px solid rgba(91,216,255,.22);
+  border-left: 3px solid var(--cyan);
+  border-radius: 6px;
+  background: rgba(91,216,255,.055);
+}
+.provenance__label {
+  display: block;
+  color: var(--cyan);
+  font-size: .65rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.provenance strong { display: block; margin-top: .25rem; font-size: .84rem; }
+.provenance p { margin: .35rem 0 0; color: var(--muted); font-size: .75rem; line-height: 1.45; }
+.plots { display: grid; gap: 1rem; }
+.diagnostics { display: grid; grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr)); gap: .75rem; }
 .diagnostics div {
   padding: .8rem;
   background: rgba(255,255,255,.035);
@@ -60,5 +83,5 @@ canvas { display: block; width: 100%; height: auto; background: #0d1117; border-
 }
 
 @media (max-width: 920px) {
-  .layout, .summary, .diagnostics { grid-template-columns: 1fr; }
+  .layout, .diagnostics { grid-template-columns: 1fr; }
 }

@@ -1,82 +1,74 @@
 # Interferometry Baseline Lab
 
-Interactive laboratory for angular resolution, projected baselines, fringe spacing, and uv coverage intuition.
+Interactive synthesis-interferometry laboratory for ENU array geometry, projected baselines, Earth-rotation uvw coverage, complex binary visibility, and the response from incomplete Fourier sampling.
 
 **Author:** Biswajit Jana
 
-## Research Motivation
+## Purpose
 
-Interferometry converts separated telescopes or antennas into a synthetic aperture. The resolving power depends on wavelength and projected baseline, while Earth rotation changes the sampled uv plane. This project provides a compact visual tool for understanding those relationships.
+The laboratory makes the source-projected nature of angular resolution explicit. A fixed ground array samples different Fourier coordinates as the source hour angle changes. It is an educational, narrow-field model, not a calibrated imaging pipeline.
 
-## Model
+## Array model
 
-The nominal interferometric fringe spacing is:
+Choose among three idealised local ENU layouts:
+
+- two-collector east-west pair;
+- three-collector L layout;
+- four-collector Y layout.
+
+They are synthetic teaching geometries, not reproductions of an observatory configuration. For an antenna-pair vector `(B_E, B_N, B_U)`, hour angle `H`, declination `delta`, and wavelength `lambda`, the code uses
 
 ```text
-theta ~= lambda / B_projected
+u = [B_E sin(H) + B_N cos(H)] / lambda
+v = [-B_E sin(delta) cos(H) + B_N sin(delta) sin(H) + B_U cos(delta)] / lambda
+w = [B_E cos(delta) cos(H) - B_N cos(delta) sin(H) + B_U sin(delta)] / lambda
 ```
 
-where `lambda` is observing wavelength and `B_projected` is the source-projected baseline. The simulator uses a simplified projected baseline:
+Every pair contributes an Earth-rotation track and Hermitian counterpart to the coverage display. The pair with the largest projected baseline supplies the single fringe and binary-visibility readout.
+
+For a binary source with flux ratio `r` and angular separation vector `(dx, dy)`, the complex visibility is
 
 ```text
-u = B sin(H) / lambda
-v = -B sin(delta) cos(H) / lambda
-B_projected = lambda sqrt(u^2 + v^2)
+V(u, v) = [1 + r exp(-2 pi i (u dx + v dy))] / (1 + r)
 ```
 
-where `H` is hour angle and `delta` is declination.
+The sampling-response panel is a naturally weighted real Fourier sum over all selected tracks. It is an instrumental response function, not a reconstructed sky image.
 
 ## Features
 
-- Baseline, wavelength, source separation, hour angle, and declination controls.
-- Binary-source position angle and flux-ratio controls.
-- Angular resolution and fringe spacing readouts.
-- Fringe pattern sketch.
-- uv coverage sketch with current projected sample.
-- Complex visibility amplitude and phase readouts.
-- Visibility-amplitude curve versus baseline length.
+- Idealised two, three, and four-collector array presets.
+- Local east-north array-layout diagram.
+- ENU to uvw projection for every baseline pair.
+- Adjustable hour-angle synthesis span.
+- uv coverage and Hermitian counterparts.
+- Projected resolution, spatial frequency, complex binary visibility, and phase.
+- Correlated fringe signal from the selected longest projected baseline.
+- Natural-weighted sampling response from all selected tracks.
+- Clearly labelled synthetic ALMA-scale scenario.
 
-## Research Use Cases
+## Run and validate
 
-- Teaching how projected baseline, observing wavelength, and source geometry control interferometric resolution.
-- Demonstrating how binary-source separation and flux ratio modulate visibility amplitude.
-- Prototyping uv-track visualisations before adding real array configurations.
-- Generating synthetic baseline tables for plotting and dashboard experiments.
-- Building intuition for optical or radio interferometry before introducing calibrated complex visibilities.
-
-## Running Locally
-
-Open `index.html` in a browser.
-
-Optional Python table generation and validation:
+Open `index.html` in a modern browser.
 
 ```bash
-python tools/projected_baseline_table.py
-python tools/validate_model.py
+node tools/validate_arrays.js
 ```
 
-## README Image Prompt
+The check verifies ENU projection limits and the expected pair counts: 2 collectors give 1 baseline, 3 give 3, and 4 give 6.
 
-A README hero image prompt is provided in [`docs/image_prompt.md`](docs/image_prompt.md). It focuses on baseline geometry, uv coverage, and interference fringes for a research-style banner.
+## Model boundaries
 
-## Limitations
+- No primary beam, thermal noise, calibration/gain errors, atmospheric phase error, delay tracking, gridding kernel, bandwidth synthesis, or deconvolution.
+- The response panel is not a dirty image or a CLEAN reconstruction.
+- The `w` coordinate is calculated and reported but no wide-field `w` correction is applied.
+- The binary source and all layouts are synthetic.
+- The ALMA scale preset is a documented scale comparison only; it is not an ALMA archive-data client.
 
-This first version is a geometric teaching model. It does not include full array geometry, antenna primary beams, visibility amplitudes, atmospheric phase noise, calibration errors, bandwidth smearing, or image reconstruction.
+## References
 
-## Research References
-
-- Thompson, Moran & Swenson, *Interferometry and Synthesis in Radio Astronomy*.
-- Monnier, 2003, *Optical interferometry in astronomy*.
-- Taylor, Carilli & Perley, 1999, *Synthesis Imaging in Radio Astronomy II*.
-- van Cittert-Zernike theorem literature connecting sky brightness and complex visibility.
-
-## Future Upgrades
-
-- Add multiple baselines and real array presets.
-- Add visibility amplitude for binary sources.
-- Add Fourier-plane sampling and dirty beam visualisation.
-- Add Python notebook for uv-track generation.
-- Add CHARA, VLTI, ALMA, and VLA-inspired educational presets with citations.
+- Thompson, Moran and Swenson, Interferometry and Synthesis in Radio Astronomy.
+- Monnier, 2003, Optical interferometry in astronomy.
+- Taylor, Carilli and Perley, Synthesis Imaging in Radio Astronomy II.
 
 ## Topics
 
