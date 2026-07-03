@@ -3,7 +3,7 @@ name: Science checks
 on:
   pull_request:
   push:
-    branches: [main, science-validation-v2]
+    branches: [main, science-validation-v2, dirty-beam-validation-v1]
 
 jobs:
   checks:
@@ -19,3 +19,5 @@ jobs:
       - run: python tools/projected_baseline_table.py
       - run: python tools/validate_model.py
       - run: node tools/validate_browser_contract.js
+      - run: node tools/validate_arrays.js
+      - run: node tools/validate_sampling_response.js
