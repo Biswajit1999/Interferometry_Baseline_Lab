@@ -32,7 +32,7 @@ For a binary source with flux ratio `r` and angular separation vector `(dx, dy)`
 V(u, v) = [1 + r exp(-2 pi i (u dx + v dy))] / (1 + r)
 ```
 
-The sampling-response panel is a naturally weighted real Fourier sum over all selected tracks. It is an instrumental response function, not a reconstructed sky image.
+The sampling-response panel is a naturally weighted real Fourier sum over all selected tracks. It is an instrumental response function, not a reconstructed sky image. The response assumptions and limits are documented in [`docs/sampling_response_validation.md`](docs/sampling_response_validation.md).
 
 ## Features
 
@@ -51,10 +51,14 @@ The sampling-response panel is a naturally weighted real Fourier sum over all se
 Open `index.html` in a modern browser.
 
 ```bash
+python tools/projected_baseline_table.py
+python tools/validate_model.py
+node tools/validate_browser_contract.js
 node tools/validate_arrays.js
+node tools/validate_sampling_response.js
 ```
 
-The check verifies ENU projection limits and the expected pair counts: 2 collectors give 1 baseline, 3 give 3, and 4 give 6.
+The checks verify ENU projection limits, array pair counts, baseline scaling, binary-visibility bounds, and sampling-response Hermitian symmetry.
 
 ## Model boundaries
 
