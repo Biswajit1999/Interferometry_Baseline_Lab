@@ -1,6 +1,6 @@
 check,value,expected,passed
-baseline_doubling_resolution_ratio,0.5,0.5,True
-hour_angle_symmetry,0.0,0.0,True
-zero_declination_transit_projection,0.0,0.0,True
-rad_to_mas_constant,206264806.247,206264806.247,True
-binary_visibility_bounds,0.5384853074504403,0.37931034482758624 <= |V| <= 1,True
+required_u_projection,5103.122148265219,5103.122148265219,True
+visibility_origin_normalised,1.0,1.0,True
+hermitian_visibility,0.0,0.0,True
+resolved_source_attenuation,0.9894541775076499,<= 1,True
+baseline_resolution_scaling,0.5,0.5,True

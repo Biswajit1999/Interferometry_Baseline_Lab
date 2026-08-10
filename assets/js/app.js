@@ -1,70 +1,291 @@
-const ids = ["baseline", "wavelength", "separation", "positionAngle", "fluxRatio", "hour", "dec"];
-const input = Object.fromEntries(ids.map((id) => [id, document.getElementById(id)]));
-const scenarioSelect = document.getElementById("scenario");
-const label = {
-  baseline: document.getElementById("baselineOut"), wavelength: document.getElementById("wavelengthOut"), separation: document.getElementById("separationOut"), positionAngle: document.getElementById("paOut"), fluxRatio: document.getElementById("fluxRatioOut"), hour: document.getElementById("hourOut"), dec: document.getElementById("decOut"), resolution: document.getElementById("resolution"), fringe: document.getElementById("fringe"), projected: document.getElementById("projected"), spatialFrequency: document.getElementById("spatialFrequency"), visibilityAmp: document.getElementById("visibilityAmp"), visibilityPhase: document.getElementById("visibilityPhase"), scenarioName: document.getElementById("scenarioName"), scenarioNote: document.getElementById("scenarioNote"),
-};
+(() => {
+  "use strict";
 
-const SCENARIOS = {
-  custom: {
-    name: "Custom synthetic two-element experiment",
-    note: "The binary sky, visibility, uv response, and fringe signal are generated in the browser. Change any slider to explore the analytic model.",
-    baseline: 120, wavelength: 1.65, hour: 35, dec: 20,
-  },
-  "alma-long-baseline": {
-    name: "ALMA 2021 high-frequency long-baseline scale",
-    note: "The 16 km baseline and 0.75 mm wavelength are representative of the documented high-frequency ALMA 2021 campaign. The binary sky, visibility, and response remain synthetic; no ALMA archive visibilities or R Lep coordinates are loaded.",
-    baseline: 16000, wavelength: 750, hour: 25, dec: -20,
-  },
-};
+  const defaults = {
+    day: "101",
+    band: "hi",
+    modelOverlay: false,
+    playback: 120,
+    fov: 160,
+    ringDiameter: 42,
+    ringWidth: 9,
+    asymmetry: 0.55,
+    positionAngle: 38,
+  };
+  const controls = Object.fromEntries(Object.keys(defaults).map((id) => [id, document.getElementById(id)]));
+  const readout = {
+    engineLight: document.getElementById("engine-light"),
+    engine: document.getElementById("engine"),
+    utc: document.getElementById("utc"),
+    hourAngle: document.getElementById("hour-angle"),
+    fps: document.getElementById("fps"),
+    baselines: document.getElementById("baselines"),
+    uvSamples: document.getElementById("uv-samples"),
+    maxUv: document.getElementById("max-uv"),
+    beam: document.getElementById("beam"),
+    compute: document.getElementById("compute"),
+    log: document.getElementById("log"),
+    status: document.getElementById("status"),
+  };
+  const buttons = {
+    run: document.getElementById("run"),
+    restart: document.getElementById("restart"),
+    export: document.getElementById("export"),
+  };
 
-function val(id) { return Number(input[id].value); }
-function rad(deg) { return deg * Math.PI / 180; }
-function masFromRad(x) { return x * 206264806.247; }
-function formatDistance(metres) { return metres >= 1000 ? `${(metres / 1000).toFixed(2)} km` : `${metres.toFixed(0)} m`; }
-function formatWavelength(microns) { return microns >= 1000 ? `${(microns / 1000).toFixed(3)} mm` : `${microns.toFixed(2)} um`; }
-function activeScenario() { return SCENARIOS[scenarioSelect.value] ?? SCENARIOS.custom; }
-function setup(canvas) {
-  const ratio = Math.min(window.devicePixelRatio || 1, 2); const width = Math.max(1, canvas.clientWidth); const aspect = Number(canvas.getAttribute("height")) / Number(canvas.getAttribute("width")); const height = Math.max(1, width * aspect);
-  canvas.width = Math.round(width * ratio); canvas.height = Math.round(height * ratio); const ctx = canvas.getContext("2d"); ctx.setTransform(ratio, 0, 0, ratio, 0, 0); return { ctx, width, height };
-}
-function uvwMeters(baseline, hour, dec) { return { u: baseline * Math.sin(hour), v: -baseline * Math.sin(dec) * Math.cos(hour), w: baseline * Math.cos(dec) * Math.cos(hour) }; }
-function binaryVisibility(uLambda, vLambda, separationMas, pa, fluxRatio) {
-  const separationRad = separationMas / 206264806.247; const dx = separationRad * Math.sin(pa); const dy = separationRad * Math.cos(pa); const phase = -2 * Math.PI * (uLambda * dx + vLambda * dy);
-  const real = (1 + fluxRatio * Math.cos(phase)) / (1 + fluxRatio); const imag = (fluxRatio * Math.sin(phase)) / (1 + fluxRatio); return { amplitude: Math.hypot(real, imag), phase: Math.atan2(imag, real) };
-}
-function model() {
-  const baseline = val("baseline"); const wavelengthUm = val("wavelength"); const wavelengthM = wavelengthUm * 1e-6; const hour = rad(val("hour")); const dec = rad(val("dec")); const uvwM = uvwMeters(baseline, hour, dec); const uLambda = uvwM.u / wavelengthM; const vLambda = uvwM.v / wavelengthM; const wLambda = uvwM.w / wavelengthM; const projected = Math.hypot(uvwM.u, uvwM.v); const resolutionMas = masFromRad(wavelengthM / Math.max(projected, 1e-12)); const separationMas = val("separation"); const pa = rad(val("positionAngle")); const fluxRatio = val("fluxRatio"); const visibility = binaryVisibility(uLambda, vLambda, separationMas, pa, fluxRatio);
-  const track = []; for (let i = 0; i <= 180; i += 1) { const h = rad(-90 + i); const uvw = uvwMeters(baseline, h, dec); track.push({ u: uvw.u / wavelengthM, v: uvw.v / wavelengthM, w: uvw.w / wavelengthM }); }
-  const maxUv = Math.max(1, ...track.flatMap((point) => [Math.abs(point.u), Math.abs(point.v)])); return { baseline, wavelengthUm, wavelengthM, hour, dec, uvwM, uLambda, vLambda, wLambda, projected, resolutionMas, separationMas, pa, fluxRatio, visibility, track, maxUv, scenario: activeScenario() };
-}
-function drawGrid(ctx, width, height, pad, xLabel, yLabel) {
-  ctx.strokeStyle = "rgba(255,255,255,.10)"; ctx.lineWidth = 1; for (let i = 0; i <= 4; i += 1) { const x = pad.left + i * (width - pad.left - pad.right) / 4; const y = pad.top + i * (height - pad.top - pad.bottom) / 4; ctx.beginPath(); ctx.moveTo(x, pad.top); ctx.lineTo(x, height - pad.bottom); ctx.stroke(); ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(width - pad.right, y); ctx.stroke(); }
-  ctx.fillStyle = "#aab2c0"; ctx.font = "12px system-ui"; ctx.fillText(yLabel, 12, 20); ctx.fillText(xLabel, width - 132, height - 14);
-}
-function drawFringes(m) {
-  const { ctx, width, height } = setup(document.getElementById("fringeCanvas")); ctx.fillStyle = "#0d1117"; ctx.fillRect(0, 0, width, height); const pad = { left: 46, right: 20, top: 24, bottom: 42 }; drawGrid(ctx, width, height, pad, "instrumental phase", "correlated intensity"); const yMid = (pad.top + height - pad.bottom) / 2; const scaleY = (height - pad.top - pad.bottom) * 0.42; ctx.strokeStyle = "#5bd8ff"; ctx.lineWidth = 2.4; ctx.beginPath();
-  for (let i = 0; i <= 360; i += 1) { const phase = -4 * Math.PI + (8 * Math.PI * i) / 360; const intensity = 0.5 + 0.5 * m.visibility.amplitude * Math.cos(phase + m.visibility.phase); const x = pad.left + i * (width - pad.left - pad.right) / 360; const y = yMid - (intensity - 0.5) * 2 * scaleY; if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y); }
-  ctx.stroke(); ctx.fillStyle = "#ffb45c"; ctx.font = "12px ui-monospace, monospace"; ctx.fillText(`synthetic binary: |V| = ${m.visibility.amplitude.toFixed(3)}  arg(V) = ${m.visibility.phase.toFixed(3)} rad`, pad.left, height - 18);
-}
-function drawUv(m) {
-  const { ctx, width, height } = setup(document.getElementById("uvCanvas")); ctx.fillStyle = "#0d1117"; ctx.fillRect(0, 0, width, height); const pad = { left: 58, right: 24, top: 24, bottom: 42 }; const limit = m.maxUv * 1.12; const sx = (u) => pad.left + ((u + limit) / (2 * limit)) * (width - pad.left - pad.right); const sy = (v) => height - pad.bottom - ((v + limit) / (2 * limit)) * (height - pad.top - pad.bottom); drawGrid(ctx, width, height, pad, "u (lambda)", "v (lambda)");
-  ctx.strokeStyle = "rgba(255,255,255,.35)"; ctx.beginPath(); ctx.moveTo(sx(-limit), sy(0)); ctx.lineTo(sx(limit), sy(0)); ctx.stroke(); ctx.beginPath(); ctx.moveTo(sx(0), sy(-limit)); ctx.lineTo(sx(0), sy(limit)); ctx.stroke();
-  const plotTrack = (sign, colour, widthPx) => { ctx.strokeStyle = colour; ctx.lineWidth = widthPx; ctx.beginPath(); m.track.forEach((p, i) => { const x = sx(sign * p.u); const y = sy(sign * p.v); if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y); }); ctx.stroke(); };
-  plotTrack(1, "#5bd8ff", 2.2); plotTrack(-1, "rgba(91,216,255,.35)", 1.2); ctx.fillStyle = "#ffb45c"; ctx.beginPath(); ctx.arc(sx(m.uLambda), sy(m.vLambda), 5.5, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = "#aab2c0"; ctx.font = "12px system-ui"; ctx.fillText(`east-west ENU model; source track: -6 h to +6 h; current w = ${(m.wLambda / 1e6).toFixed(2)} Mlambda`, pad.left, height - 16);
-}
-function pixelColour(value) { const t = Math.max(-1, Math.min(1, value)); return t >= 0 ? [Math.round(18 + 235 * t), Math.round(24 + 185 * t), Math.round(42 + 190 * t)] : [Math.round(35 + 120 * (1 + t)), Math.round(22 + 75 * (1 + t)), Math.round(70 + 140 * (1 + t))]; }
-function drawVisibilityAndBeam(m) {
-  const { ctx, width, height } = setup(document.getElementById("visibilityCanvas")); ctx.fillStyle = "#0d1117"; ctx.fillRect(0, 0, width, height); const split = width * 0.57; const pad = { left: 48, right: 18, top: 28, bottom: 40 }; const maxBaseline = Math.max(10, m.baseline * 1.5); const px = (b) => pad.left + (b / maxBaseline) * (split - pad.left - pad.right); const py = (amp) => height - pad.bottom - amp * (height - pad.top - pad.bottom);
-  ctx.strokeStyle = "rgba(255,255,255,.10)"; for (let i = 0; i <= 4; i += 1) { const y = pad.top + (height - pad.top - pad.bottom) * i / 4; ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(split - pad.right, y); ctx.stroke(); } ctx.strokeStyle = "#5bd8ff"; ctx.lineWidth = 2.3; ctx.beginPath();
-  for (let i = 0; i <= 220; i += 1) { const scale = i / 220; const vis = binaryVisibility(m.uLambda * scale * maxBaseline / m.baseline, m.vLambda * scale * maxBaseline / m.baseline, m.separationMas, m.pa, m.fluxRatio); const x = px(maxBaseline * scale); const y = py(vis.amplitude); if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y); }
-  ctx.stroke(); ctx.fillStyle = "#ffb45c"; ctx.beginPath(); ctx.arc(px(m.baseline), py(m.visibility.amplitude), 5.5, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = "#aab2c0"; ctx.font = "12px system-ui"; ctx.fillText("synthetic binary visibility amplitude", pad.left, 18); ctx.fillText("baseline length (m)", split - 130, height - 14);
-  const n = 112; const image = ctx.createImageData(n, n); const samples = m.track.filter((_, i) => i % 3 === 0); const fieldRad = 5.5 / m.maxUv; for (let y = 0; y < n; y += 1) { const directionM = fieldRad * (1 - 2 * (y + 0.5) / n); for (let x = 0; x < n; x += 1) { const directionL = fieldRad * (2 * (x + 0.5) / n - 1); let real = 0; for (const point of samples) real += Math.cos(2 * Math.PI * (point.u * directionL + point.v * directionM)); const [r, g, b] = pixelColour(real / samples.length); const p = 4 * (y * n + x); image.data[p] = r; image.data[p + 1] = g; image.data[p + 2] = b; image.data[p + 3] = 255; } }
-  const raw = document.createElement("canvas"); raw.width = n; raw.height = n; raw.getContext("2d").putImageData(image, 0, 0); const size = Math.min(height - 48, width - split - 26); const x0 = split + (width - split - size) / 2; const y0 = 24; ctx.imageSmoothingEnabled = false; ctx.drawImage(raw, x0, y0, size, size); ctx.strokeStyle = "rgba(255,255,255,.4)"; ctx.strokeRect(x0, y0, size, size); ctx.fillStyle = "#aab2c0"; ctx.fillText("natural-weighted synthetic response", x0, 18); ctx.fillText(`plus/minus ${masFromRad(fieldRad).toFixed(2)} mas`, x0, height - 14);
-}
-function updateScenarioLabel() { const scenario = activeScenario(); label.scenarioName.textContent = scenario.name; label.scenarioNote.textContent = scenario.note; }
-function render() {
-  const m = model(); updateScenarioLabel(); label.baseline.textContent = formatDistance(m.baseline); label.wavelength.textContent = formatWavelength(m.wavelengthUm); label.separation.textContent = `${m.separationMas.toFixed(1)} mas`; label.positionAngle.textContent = `${val("positionAngle").toFixed(0)} deg`; label.fluxRatio.textContent = m.fluxRatio.toFixed(2); label.hour.textContent = `${val("hour").toFixed(0)} deg`; label.dec.textContent = `${val("dec").toFixed(0)} deg`; label.resolution.textContent = `${m.resolutionMas.toFixed(3)} mas`; label.fringe.textContent = `${m.resolutionMas.toFixed(3)} mas`; label.projected.textContent = formatDistance(m.projected); label.spatialFrequency.textContent = `${(Math.hypot(m.uLambda, m.vLambda) / 1e6).toFixed(2)} Mlambda`; label.visibilityAmp.textContent = m.visibility.amplitude.toFixed(3); label.visibilityPhase.textContent = `${m.visibility.phase.toFixed(3)} rad`; drawFringes(m); drawUv(m); drawVisibilityAndBeam(m);
-}
-function loadScenario(key) { const scenario = SCENARIOS[key] ?? SCENARIOS.custom; input.baseline.value = String(scenario.baseline); input.wavelength.value = String(scenario.wavelength); input.hour.value = String(scenario.hour); input.dec.value = String(scenario.dec); render(); }
-scenarioSelect.addEventListener("change", () => loadScenario(scenarioSelect.value)); ids.forEach((id) => input[id].addEventListener("input", () => { if (scenarioSelect.value !== "custom") scenarioSelect.value = "custom"; render(); })); window.addEventListener("resize", render); render();
+  class Canvas {
+    constructor(id) {
+      this.canvas = document.getElementById(id);
+      this.context = this.canvas.getContext("2d", { alpha: false, desynchronized: true });
+    }
+
+    start() {
+      const ratio = Math.min(window.devicePixelRatio || 1, 2);
+      const rect = this.canvas.getBoundingClientRect();
+      const width = Math.max(10, Math.round(rect.width));
+      const height = Math.max(10, Math.round(rect.height));
+      this.canvas.width = Math.round(width * ratio);
+      this.canvas.height = Math.round(height * ratio);
+      this.context.setTransform(ratio, 0, 0, ratio, 0, 0);
+      this.context.fillStyle = "#080d16";
+      this.context.fillRect(0, 0, width, height);
+      return { ctx: this.context, width, height };
+    }
+  }
+
+  const canvas = {
+    uv: new Canvas("uv"),
+    beam: new Canvas("beam-map"),
+    dirty: new Canvas("dirty"),
+    truth: new Canvas("truth"),
+    visibility: new Canvas("visibility"),
+  };
+  const state = {
+    worker: null,
+    requestTimer: 0,
+    running: true,
+    frame: null,
+    logs: [],
+    frames: 0,
+    fpsStarted: performance.now(),
+  };
+
+  function value(id) {
+    if (controls[id].type === "checkbox") return controls[id].checked;
+    return controls[id].type === "select-one" ? controls[id].value : Number(controls[id].value);
+  }
+
+  function updateLabels() {
+    const days = { "095": "APR 05 / DOY 095", "096": "APR 06 / DOY 096", "100": "APR 10 / DOY 100", "101": "APR 11 / DOY 101" };
+    document.getElementById("day-value").textContent = days[value("day")];
+    document.getElementById("band-value").textContent = value("band").toUpperCase();
+    document.getElementById("modelOverlay-value").textContent = value("modelOverlay") ? "ON" : "OFF";
+    document.getElementById("playback-value").textContent = `${value("playback").toFixed(0)} sample/s`;
+    document.getElementById("fov-value").textContent = `${value("fov").toFixed(0)} uas`;
+    document.getElementById("ringDiameter-value").textContent = `${value("ringDiameter").toFixed(1)} uas`;
+    document.getElementById("ringWidth-value").textContent = `${value("ringWidth").toFixed(1)} uas`;
+    document.getElementById("asymmetry-value").textContent = value("asymmetry").toFixed(2);
+    document.getElementById("positionAngle-value").textContent = `${value("positionAngle").toFixed(0)} deg`;
+    document.querySelectorAll(".model-parameters").forEach((element) => {
+      element.classList.toggle("active", value("modelOverlay"));
+    });
+  }
+
+  function parameters() {
+    return Object.fromEntries(Object.keys(defaults).map((id) => [id, value(id)]));
+  }
+
+  function engine(name, className, status) {
+    readout.engine.textContent = name;
+    readout.engineLight.className = className;
+    readout.status.textContent = status;
+  }
+
+  function log(message) {
+    state.logs.unshift(`${new Date().toISOString().slice(11, 19)}  ${message}`);
+    state.logs.length = Math.min(state.logs.length, 7);
+    readout.log.replaceChildren(...state.logs.map((line) => {
+      const item = document.createElement("li");
+      item.textContent = line;
+      return item;
+    }));
+  }
+
+  function configure(immediate = false) {
+    updateLabels();
+    if (!state.worker) return;
+    clearTimeout(state.requestTimer);
+    const send = () => {
+      engine("LOADING", "busy", "RETRIEVING EHT CALIBRATED VISIBILITIES");
+      state.worker.postMessage({ type: "configure", parameters: parameters() });
+    };
+    if (immediate) send(); else state.requestTimer = setTimeout(send, 45);
+  }
+
+  function imagePlot(surface, bytes, size, emptyMessage = "") {
+    const { ctx, width, height } = surface.start();
+    const scratch = document.createElement("canvas");
+    scratch.width = size;
+    scratch.height = size;
+    scratch.getContext("2d").putImageData(new ImageData(bytes, size, size), 0, 0);
+    const side = Math.min(width, height) - 24;
+    const left = (width - side) / 2;
+    const top = (height - side) / 2;
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(scratch, left, top, side, side);
+    ctx.imageSmoothingEnabled = true;
+    ctx.strokeStyle = "rgba(129,150,173,.5)";
+    ctx.strokeRect(left, top, side, side);
+    if (emptyMessage) {
+      ctx.fillStyle = "#8196ad";
+      ctx.font = '10px "Roboto Mono", Consolas, monospace';
+      ctx.textAlign = "center";
+      ctx.fillText(emptyMessage, width / 2, height / 2);
+      ctx.textAlign = "left";
+    }
+  }
+
+  function drawUv(frame) {
+    const { ctx, width, height } = canvas.uv.start();
+    const side = Math.min(width, height) - 45;
+    const centreX = width / 2;
+    const centreY = height / 2;
+    ctx.strokeStyle = "rgba(129,150,173,.32)";
+    ctx.beginPath();
+    ctx.moveTo(centreX - side / 2, centreY);
+    ctx.lineTo(centreX + side / 2, centreY);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(centreX, centreY - side / 2);
+    ctx.lineTo(centreX, centreY + side / 2);
+    ctx.stroke();
+    ctx.fillStyle = "#34d7e5";
+    for (let index = 0; index < frame.uv.length; index += 2) {
+      ctx.fillRect(centreX + frame.uv[index] * side / 2 - 1, centreY - frame.uv[index + 1] * side / 2 - 1, 2.3, 2.3);
+    }
+    ctx.fillStyle = "#8196ad";
+    ctx.font = '10px "Roboto Mono", Consolas, monospace';
+    ctx.fillText("-u", centreX - side / 2, centreY + 17);
+    ctx.textAlign = "right";
+    ctx.fillText("+u", centreX + side / 2, centreY + 17);
+    ctx.textAlign = "left";
+    ctx.fillText("+v", centreX + 8, centreY - side / 2 + 10);
+  }
+
+  function drawVisibility(frame) {
+    const { ctx, width, height } = canvas.visibility.start();
+    const box = { left: 58, top: 12, w: width - 75, h: height - 38 };
+    ctx.strokeStyle = "rgba(129,150,173,.25)";
+    for (let tick = 0; tick <= 4; tick += 1) {
+      const y = box.top + box.h * tick / 4;
+      ctx.beginPath();
+      ctx.moveTo(box.left, y);
+      ctx.lineTo(box.left + box.w, y);
+      ctx.stroke();
+    }
+    ctx.fillStyle = "#8196ad";
+    ctx.font = '10px "Roboto Mono", Consolas, monospace';
+    ctx.fillText("|V| Jy", 8, box.top + 7);
+    ctx.textAlign = "right";
+    ctx.fillText("UTC HOURS", width - 12, height - 8);
+    ctx.textAlign = "left";
+    if (frame.visibility.amplitudes.length === 0) return;
+    const values = frame.telemetry;
+    const timeSpan = values.timeMaximumHours - values.timeMinimumHours || 1;
+    const maximum = values.maximumAmplitudeJy || 1;
+    ctx.strokeStyle = "#ffbc57";
+    ctx.lineWidth = 1.3;
+    ctx.beginPath();
+    for (let index = 0; index < frame.visibility.amplitudes.length; index += 1) {
+      const x = box.left + (frame.visibility.times[index] - values.timeMinimumHours) / timeSpan * box.w;
+      const y = box.top + (1 - frame.visibility.amplitudes[index] / maximum) * box.h;
+      if (index === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+    ctx.fillText(`${maximum.toFixed(2)} Jy`, box.left + 5, box.top + 13);
+  }
+
+  function handle(message) {
+    if (message.type === "loading") {
+      log(message.message);
+    } else if (message.type === "dataError") {
+      engine("FAILED", "failed", "EHT DATA LOAD FAILED");
+      log(message.message);
+    } else if (message.type === "frame") {
+      state.frame = message;
+      const values = message.telemetry;
+      readout.hourAngle.textContent = `${values.currentUtcHours.toFixed(3)} h`;
+      readout.baselines.textContent = values.baselines.toFixed(0);
+      readout.uvSamples.textContent = `${values.uvSamples.toFixed(0)} / ${values.totalRecords * 2}`;
+      readout.maxUv.textContent = `${values.maximumUv.toExponential(3)} lambda`;
+      readout.beam.textContent = `${values.beamMicroarcsec.toFixed(2)} uas`;
+      readout.compute.textContent = `${values.computeMilliseconds.toFixed(2)} ms`;
+      drawUv(message);
+      imagePlot(canvas.beam, message.dirtyBeam, message.imageSize);
+      imagePlot(canvas.dirty, message.dirtyImage, message.imageSize);
+      imagePlot(canvas.truth, message.truth, message.imageSize, values.modelEnabled ? "" : "ENABLE MODEL REFERENCE");
+      drawVisibility(message);
+      engine("ONLINE", "online", `EHT IFFT CURRENT / ${values.activeRecords} RECORDS`);
+    } else if (message.type === "csv") {
+      const url = URL.createObjectURL(new Blob([message.content], { type: "text/csv;charset=utf-8" }));
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = message.filename;
+      link.click();
+      URL.revokeObjectURL(url);
+      log(`Exported ${message.rows} measured EHT visibility records`);
+    }
+  }
+
+  function start() {
+    updateLabels();
+    readout.utc.textContent = new Date().toISOString().slice(11, 19);
+    setInterval(() => {
+      readout.utc.textContent = new Date().toISOString().slice(11, 19);
+    }, 1000);
+    try {
+      state.worker = new Worker("assets/js/physicsWorker.js");
+      state.worker.addEventListener("message", (event) => handle(event.data));
+      state.worker.addEventListener("error", (event) => {
+        engine("FAILED", "failed", "WORKER FAILURE");
+        log(event.message);
+      });
+      configure(true);
+      log("Loading EHT released visibility product");
+    } catch (error) {
+      engine("FAILED", "failed", "SERVE APPLICATION OVER HTTP");
+      log(error.message);
+    }
+    const animate = (timestamp) => {
+      state.frames += 1;
+      if (timestamp - state.fpsStarted >= 1000) {
+        readout.fps.textContent = `${(state.frames * 1000 / (timestamp - state.fpsStarted)).toFixed(0)} FPS`;
+        state.frames = 0;
+        state.fpsStarted = timestamp;
+      }
+      requestAnimationFrame(animate);
+    };
+    requestAnimationFrame(animate);
+  }
+
+  Object.values(controls).forEach((control) => {
+    control.addEventListener("input", () => configure(false));
+    control.addEventListener("change", () => configure(true));
+  });
+  buttons.run.addEventListener("click", () => {
+    state.running = !state.running;
+    buttons.run.textContent = state.running ? "PAUSE TRACK" : "RESUME TRACK";
+    buttons.run.classList.toggle("on", state.running);
+    state.worker?.postMessage({ type: "setRunning", running: state.running });
+    log(state.running ? "Observed visibility playback resumed" : "Observed visibility playback paused");
+  });
+  buttons.restart.addEventListener("click", () => {
+    state.worker?.postMessage({ type: "restart" });
+    log("EHT record progression restarted");
+  });
+  buttons.export.addEventListener("click", () => state.worker?.postMessage({ type: "exportUv" }));
+  window.addEventListener("resize", () => {
+    if (state.frame) handle(state.frame);
+  });
+  start();
+})();

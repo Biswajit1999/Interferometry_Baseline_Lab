@@ -1,57 +1,29 @@
-# Equations and Assumptions
+# Synthesis Imaging Kernel Equations
 
-## Angular Resolution
-
-The interferometric fringe spacing is approximated by:
+For baseline vector `(Bx, By, Bz)`, source declination `delta`, hour angle `H` and wavelength
+`lambda`, coordinates in wavelengths are:
 
 ```text
-theta ~= lambda / B_projected
+u = (Bx sin H + By cos H) / lambda
+v = (-Bx sin delta cos H + By sin delta sin H + Bz cos delta) / lambda
 ```
 
-where `lambda` is wavelength and `B_projected` is the baseline component perpendicular to the source direction.
-
-## East-West Baseline uv Track
-
-For a simplified east-west baseline, the projected coordinates are:
+The van Cittert-Zernike relationship is:
 
 ```text
-u = B sin(H) / lambda
-v = -B sin(delta) cos(H) / lambda
+V(u,v) = integral integral I(l,m) exp[-2 pi i(ul + vm)] dl dm
 ```
 
-where `H` is hour angle and `delta` is source declination. The projected baseline length is:
+For the implemented two circular Gaussian sources with standard deviation `sigma`, displacement
+`(l2,m2)` and relative flux `r`:
 
 ```text
-B_projected = lambda sqrt(u^2 + v^2)
+V = exp[-2 pi^2 sigma^2(u^2+v^2)] [1+r exp(-2 pi i(ul2+vm2))] / (1+r)
 ```
 
-Equivalently, substituting the expressions above:
+The worker places each sample and conjugate on a centred natural-weighted Fourier grid:
 
 ```text
-B_projected = B sqrt[sin^2(H) + sin^2(delta) cos^2(H)]
-```
-
-## Binary-Source Fringe Sketch
-
-The displayed fringe phase uses a simplified phase offset proportional to:
-
-```text
-phase offset proportional to separation / theta
-```
-
-This shows qualitative fringe sensitivity to angular separation, not calibrated visibility fitting.
-
-## Binary Complex Visibility
-
-For a two-point-source model with flux ratio `r = F2 / F1`, the normalised complex visibility is:
-
-```text
-V(u, v) = [1 + r exp(-2 pi i (u dx + v dy))] / (1 + r)
-```
-
-where `(dx, dy)` is the angular separation vector on the sky in radians. The browser reports:
-
-```text
-|V| = sqrt(Re(V)^2 + Im(V)^2)
-phase = atan2(Im(V), Re(V))
+dirty beam  = IFFT2(weights)
+dirty image = IFFT2(weights V)
 ```

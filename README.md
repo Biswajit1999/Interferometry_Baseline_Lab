@@ -1,75 +1,127 @@
 # Interferometry Baseline Lab
 
-Interactive synthesis-interferometry laboratory for ENU array geometry, projected baselines, Earth-rotation uvw coverage, complex binary visibility, and the response from incomplete Fourier sampling.
+An observation-led browser instrument for radio interferometric imaging. The console now starts
+from calibrated Event Horizon Telescope (EHT) measurements of M87* released with the first EHT
+results, rather than generating an invented array and source by default.
 
-**Author:** Biswajit Jana
+## Observational Product
 
-## Purpose
+The worker streams the official EHT Collaboration data product `2019-D01-01`: EHT-HOPS
+network-calibrated, time-averaged Stokes-I visibilities of M87 from the April 2017 campaign.
+The interface exposes all four released observation days and both released frequency bands.
 
-The laboratory makes the source-projected nature of angular resolution explicit. A fixed ground array samples different Fourier coordinates as the source hour angle changes. It is an educational, narrow-field model, not a calibrated imaging pipeline.
+| Selector | Official Released Files |
+| --- | --- |
+| April 05 / DOY 095 | `SR1_M87_2017_095_hi_hops_netcal_StokesI.csv`, `..._lo_...csv` |
+| April 06 / DOY 096 | `SR1_M87_2017_096_hi_hops_netcal_StokesI.csv`, `..._lo_...csv` |
+| April 10 / DOY 100 | `SR1_M87_2017_100_hi_hops_netcal_StokesI.csv`, `..._lo_...csv` |
+| April 11 / DOY 101 | `SR1_M87_2017_101_hi_hops_netcal_StokesI.csv`, `..._lo_...csv` |
 
-## Array model
+Official release: [EHT Collaboration / 2019-D01-01](https://github.com/eventhorizontelescope/2019-D01-01).
 
-Choose among three idealised local ENU layouts:
-
-- two-collector east-west pair;
-- three-collector L layout;
-- four-collector Y layout.
-
-They are synthetic teaching geometries, not reproductions of an observatory configuration. For an antenna-pair vector `(B_E, B_N, B_U)`, hour angle `H`, declination `delta`, and wavelength `lambda`, the code uses
-
-```text
-u = [B_E sin(H) + B_N cos(H)] / lambda
-v = [-B_E sin(delta) cos(H) + B_N sin(delta) sin(H) + B_U cos(delta)] / lambda
-w = [B_E cos(delta) cos(H) - B_N cos(delta) sin(H) + B_U sin(delta)] / lambda
-```
-
-Every pair contributes an Earth-rotation track and Hermitian counterpart to the coverage display. The pair with the largest projected baseline supplies the single fringe and binary-visibility readout.
-
-For a binary source with flux ratio `r` and angular separation vector `(dx, dy)`, the complex visibility is
+Each record supplies UTC sample time, station pair, released `u` and `v` coordinates in
+wavelengths, Stokes-I amplitude in Jy, visibility phase in degrees and statistical uncertainty.
+The worker converts measured polar visibility into complex components:
 
 ```text
-V(u, v) = [1 + r exp(-2 pi i (u dx + v dy))] / (1 + r)
+Re(V) = |V| cos(phi)
+Im(V) = |V| sin(phi)
 ```
 
-The sampling-response panel is a naturally weighted real Fourier sum over all selected tracks. It is an instrumental response function, not a reconstructed sky image.
+It grids each released visibility with its Hermitian conjugate and produces:
 
-## Features
+```text
+dirty beam  = IFFT2 { sampling weights }
+dirty image = IFFT2 { weights x measured V(u,v) }
+```
 
-- Idealised two, three, and four-collector array presets.
-- Local east-north array-layout diagram.
-- ENU to uvw projection for every baseline pair.
-- Adjustable hour-angle synthesis span.
-- uv coverage and Hermitian counterparts.
-- Projected resolution, spatial frequency, complex binary visibility, and phase.
-- Correlated fringe signal from the selected longest projected baseline.
-- Natural-weighted sampling response from all selected tracks.
-- Clearly labelled synthetic ALMA-scale scenario.
+The `u-v` display, visibility-amplitude track, dirty beam and dirty image are therefore derived
+from published EHT measurements. No simulated data silently replace a failed network request.
 
-## Run and validate
+## Optional Ring Reference
 
-Open `index.html` in a modern browser.
+The `MODEL REFERENCE` switch enables a separate asymmetric annular brightness model in the
+fourth image panel. It is labelled as a model and does not modify the observed dirty image.
+The diameter, width, asymmetry and position angle controls allow visual comparison with a
+horizon-scale ring interpretation without implying deconvolution or fitted parameters.
+
+The van Cittert-Zernike relationship underlying imaging is:
+
+```text
+V(u,v) = integral integral I(l,m) exp[-2 pi i (u l + v m)] dl dm
+```
+
+## Architecture
+
+```text
+index.html
+assets/
+  css/style.css                    Console layout
+  js/app.js                        Canvas rendering and observation/model labelling
+  js/physicsWorker.js              EHT CSV parsing, gridding and 2D IFFT
+data/
+  observations/
+    eht_m87_2017_metadata.json     Release provenance manifest
+    SR1_M87_2017_*.csv             optional unchanged official local cache
+tools/
+  fetch_eht_observations.py        Acquire and hash recorded visibility CSV files
+  validate_observations.py         Validate retained release products
+```
+
+The worker first attempts locally retained official CSV files and falls back to the EHT
+Collaboration public release when the local cache is absent. It caches the selected file for
+the current session. Numerical operations remain in the worker so UI interaction remains
+responsive.
+
+## Run
+
+Serve this directory over HTTP:
 
 ```bash
-node tools/validate_arrays.js
+python -m http.server 8000
 ```
 
-The check verifies ENU projection limits and the expected pair counts: 2 collectors give 1 baseline, 3 give 3, and 4 give 6.
+Open `http://localhost:8000/`. With no local cache, initial loading of each released EHT file
+requires access to `raw.githubusercontent.com/eventhorizontelescope/2019-D01-01`.
 
-## Model boundaries
+For offline use, retrieve and validate the unchanged official CSV products:
 
-- No primary beam, thermal noise, calibration/gain errors, atmospheric phase error, delay tracking, gridding kernel, bandwidth synthesis, or deconvolution.
-- The response panel is not a dirty image or a CLEAN reconstruction.
-- The `w` coordinate is calculated and reported but no wide-field `w` correction is applied.
-- The binary source and all layouts are synthetic.
-- The ALMA scale preset is a documented scale comparison only; it is not an ALMA archive-data client.
+```bash
+python tools/fetch_eht_observations.py
+python tools/validate_observations.py
+```
+
+## Export
+
+`EXPORT UV` downloads the accumulated released records and calculated Cartesian visibility
+components:
+
+```text
+utc_hours,baseline,u_wavelengths,v_wavelengths,stokes_i_amplitude_jy,
+stokes_i_phase_deg,stokes_i_sigma_jy,visibility_real_jy,visibility_imaginary_jy
+```
+
+## Limits
+
+This console performs direct natural-weight gridding and a dirty IFFT only. It does not perform
+publication-grade EHT imaging, CLEAN/RML deconvolution, station-gain self-calibration, closure
+quantity analysis, systematic-error modelling, scattering correction or time-variable source
+inference.
 
 ## References
 
-- Thompson, Moran and Swenson, Interferometry and Synthesis in Radio Astronomy.
-- Monnier, 2003, Optical interferometry in astronomy.
-- Taylor, Carilli and Perley, Synthesis Imaging in Radio Astronomy II.
+Event Horizon Telescope Collaboration, 2019. First M87 Event Horizon Telescope results. III.
+Data processing and calibration. *The Astrophysical Journal Letters*, 875(1), L3.
+https://doi.org/10.3847/2041-8213/ab0c57.
 
-## Topics
+Event Horizon Telescope Collaboration, 2019. First M87 Event Horizon Telescope results. IV.
+Imaging the central supermassive black hole. *The Astrophysical Journal Letters*, 875(1), L4.
+https://doi.org/10.3847/2041-8213/ab0e85.
 
-`interferometry`, `radio-astronomy`, `instrumentation`, `uv-coverage`, `angular-resolution`, `scientific-visualisation`, `javascript`
+Thompson, A.R., Moran, J.M. and Swenson Jr, G.W., 2017. *Interferometry and synthesis in
+radio astronomy*. 3rd ed. Cham: Springer Nature.
+https://doi.org/10.1007/978-3-319-44431-4.
+
+## Licence
+
+Released under the MIT Licence. See `LICENSE`.

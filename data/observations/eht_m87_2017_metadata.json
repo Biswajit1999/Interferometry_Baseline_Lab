@@ -1,0 +1,81 @@
+{
+  "dataset": "EHT Collaboration M87 2017 calibrated Stokes-I visibilities",
+  "officialRelease": "https://github.com/eventhorizontelescope/2019-D01-01",
+  "sourceCsvBase": "https://raw.githubusercontent.com/eventhorizontelescope/2019-D01-01/master/csv/",
+  "productFamily": "SR1_M87_2017_<day>_<band>_hops_netcal_StokesI.csv",
+  "days": [
+    "095",
+    "096",
+    "100",
+    "101"
+  ],
+  "bands": [
+    "hi",
+    "lo"
+  ],
+  "products": {
+    "095_hi": {
+      "file": "SR1_M87_2017_095_hi_hops_netcal_StokesI.csv",
+      "officialUrl": "https://raw.githubusercontent.com/eventhorizontelescope/2019-D01-01/master/csv/SR1_M87_2017_095_hi_hops_netcal_StokesI.csv",
+      "bytes": 528840,
+      "sha256": "1e7c2a63e79b1722dcc5d7fe73d8193309adec20c4e660b0659169ee66c63541",
+      "visibilityRows": 6458
+    },
+    "095_lo": {
+      "file": "SR1_M87_2017_095_lo_hops_netcal_StokesI.csv",
+      "officialUrl": "https://raw.githubusercontent.com/eventhorizontelescope/2019-D01-01/master/csv/SR1_M87_2017_095_lo_hops_netcal_StokesI.csv",
+      "bytes": 528479,
+      "sha256": "e11231fbb09a29762dbb318a733be329a1dfea2ba2cad4e13a6208766b0134a8",
+      "visibilityRows": 6453
+    },
+    "096_hi": {
+      "file": "SR1_M87_2017_096_hi_hops_netcal_StokesI.csv",
+      "officialUrl": "https://raw.githubusercontent.com/eventhorizontelescope/2019-D01-01/master/csv/SR1_M87_2017_096_hi_hops_netcal_StokesI.csv",
+      "bytes": 742862,
+      "sha256": "769e5ab12c47f3f4ad5da99e7ed44594111717e831c5aa5e4a5c366cfc0bd6b6",
+      "visibilityRows": 9081
+    },
+    "096_lo": {
+      "file": "SR1_M87_2017_096_lo_hops_netcal_StokesI.csv",
+      "officialUrl": "https://raw.githubusercontent.com/eventhorizontelescope/2019-D01-01/master/csv/SR1_M87_2017_096_lo_hops_netcal_StokesI.csv",
+      "bytes": 708585,
+      "sha256": "fd4d1b39ab2e561f502d70c93667d67a525aa9ac4af432ceed01669e039911c5",
+      "visibilityRows": 8645
+    },
+    "100_hi": {
+      "file": "SR1_M87_2017_100_hi_hops_netcal_StokesI.csv",
+      "officialUrl": "https://raw.githubusercontent.com/eventhorizontelescope/2019-D01-01/master/csv/SR1_M87_2017_100_hi_hops_netcal_StokesI.csv",
+      "bytes": 213801,
+      "sha256": "3e6f034e12212a862632e6242b26335e4b48c68cfa87647632834cd43714a353",
+      "visibilityRows": 2610
+    },
+    "100_lo": {
+      "file": "SR1_M87_2017_100_lo_hops_netcal_StokesI.csv",
+      "officialUrl": "https://raw.githubusercontent.com/eventhorizontelescope/2019-D01-01/master/csv/SR1_M87_2017_100_lo_hops_netcal_StokesI.csv",
+      "bytes": 194347,
+      "sha256": "1dc51e3e31a840ec34de5b5ff4d8a6af0cbb73cd8c6db85e917366ed3ec7924a",
+      "visibilityRows": 2367
+    },
+    "101_hi": {
+      "file": "SR1_M87_2017_101_hi_hops_netcal_StokesI.csv",
+      "officialUrl": "https://raw.githubusercontent.com/eventhorizontelescope/2019-D01-01/master/csv/SR1_M87_2017_101_hi_hops_netcal_StokesI.csv",
+      "bytes": 660437,
+      "sha256": "7710f9a5c830ded0749e4f52ced75438435faf8bfb0b6e11b9e3adec25489b92",
+      "visibilityRows": 8058
+    },
+    "101_lo": {
+      "file": "SR1_M87_2017_101_lo_hops_netcal_StokesI.csv",
+      "officialUrl": "https://raw.githubusercontent.com/eventhorizontelescope/2019-D01-01/master/csv/SR1_M87_2017_101_lo_hops_netcal_StokesI.csv",
+      "bytes": 610274,
+      "sha256": "6411680cdd4a0b6a651b56c8ada9069ae49659935877ff7e03acb9b173a80bb2",
+      "visibilityRows": 7447
+    }
+  },
+  "processing": [
+    "CSV products are retained locally unchanged from the public EHT release.",
+    "Worker converts released amplitude and phase to complex visibility.",
+    "Worker grids measured visibility and Hermitian conjugate samples before IFFT dirty-beam and dirty-image construction.",
+    "Optional ring reference image is a separate model and never substitutes for observed visibilities."
+  ],
+  "citation": "Event Horizon Telescope Collaboration et al., 2019. First M87 Event Horizon Telescope Results. III. Data Processing and Calibration. The Astrophysical Journal Letters, 875, L3."
+}
