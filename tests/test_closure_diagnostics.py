@@ -1,11 +1,13 @@
 """Physics-aware synthetic regression tests for EHT closure diagnostics."""
 import math
+import hashlib
 from pathlib import Path
 import sys
 import tempfile
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
+from validate_observations import release_crlf_bytes, validate_product
 from closure_diagnostics import (Visibility, closure_amplitudes, closure_phases,
                                  leave_one_hour_out_uv, read_visibilities,
                                  uv_sampling_moments)
@@ -105,6 +107,25 @@ class SamplingTests(unittest.TestCase):
         self.assertEqual(len(rows), 1)
         self.assertEqual(rows[0].station1, "AA")
         self.assertAlmostEqual(rows[0].utc_hour, 0.76805556)
+
+
+class ProvenanceTests(unittest.TestCase):
+    def test_crlf_restoration_preserves_content_and_digest(self):
+        original = b"#metadata\r\n0.1,AA,LM,1,2,3,4,0.5\r\n"
+        normalised = original.replace(b"\r\n", b"\n")
+        self.assertEqual(release_crlf_bytes(normalised), original)
+        self.assertEqual(release_crlf_bytes(original), original)
+        with tempfile.TemporaryDirectory() as folder:
+            path = Path(folder) / "example.csv"
+            path.write_bytes(normalised)
+            product = {"visibilityRows": 1, "bytes": len(original),
+                       "sha256": hashlib.sha256(original).hexdigest()}
+            count, mode = validate_product(path, product)
+            self.assertEqual(count, 1)
+            self.assertIn("CRLF", mode)
+            path.write_bytes(normalised.replace(b",3,", b",9,"))
+            with self.assertRaises(ValueError):
+                validate_product(path, product)
 
 
 if __name__ == "__main__":
