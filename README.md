@@ -131,3 +131,17 @@ https://doi.org/10.1007/978-3-319-44431-4.
 ## Licence
 
 Released under the MIT Licence. See `LICENSE`.
+
+## Research evidence and downloads
+
+- [Download the machine-readable table profiles](evidence/table-profiles.json) for 11 archived tables. Open `table-evidence.html` from the checkout for the coverage chart.
+- Start with [M87 april05 high baseline summary](data/m87-april05-high-baseline-summary.csv), [Validation summary](data/validation_summary.csv), [Projected baseline](data/projected_baseline.csv).
+
+Run these commands from the repository root to rebuild the published evidence.
+
+```sh
+python scripts/evidence_catalog.py
+python scripts/render_evidence_page.py
+python scripts/profile_evidence_tables.py
+python scripts/render_table_profiles.py
+```
