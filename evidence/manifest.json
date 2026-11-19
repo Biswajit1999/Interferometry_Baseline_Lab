@@ -1,0 +1,611 @@
+{
+  "schema": 1,
+  "project": "Interferometry Baseline Lab",
+  "repository": "https://github.com/Biswajit1999/Interferometry_Baseline_Lab",
+  "files": [
+    {
+      "label": "M87 april05 high baseline summary",
+      "path": "data/m87-april05-high-baseline-summary.csv",
+      "role": "Data and provenance",
+      "bytes": 1398,
+      "sha256": "651883093e6cf52048355004f72126bce15c7b45492b66525a204e262ad0d503",
+      "hash_basis": "LF-normalised text",
+      "format": "CSV",
+      "rows": 15,
+      "columns": 8,
+      "headers": [
+        "baseline_min_glambda",
+        "baseline_max_glambda",
+        "sample_count",
+        "median_baseline_glambda",
+        "median_amplitude_jy",
+        "p16_amplitude_jy",
+        "p84_amplitude_jy"
+      ],
+      "preview": [
+        [
+          "0.0",
+          "0.5",
+          "593",
+          "0.00012128135726857321",
+          "1.12393039",
+          "1.1200033424",
+          "1.125372386"
+        ],
+        [
+          "1.0",
+          "1.5",
+          "485",
+          "1.3750514710806914",
+          "0.25464312",
+          "0.1388098868",
+          "0.31249722679999997"
+        ],
+        [
+          "1.5",
+          "2.0",
+          "24",
+          "1.5008322288758185",
+          "0.23944238",
+          "0.22254678",
+          "0.2573382088"
+        ],
+        [
+          "2.0",
+          "2.5",
+          "152",
+          "2.400425316426917",
+          "0.157756815",
+          "0.0927514604",
+          "0.2664755792"
+        ]
+      ]
+    },
+    {
+      "label": "Validation summary",
+      "path": "data/validation_summary.csv",
+      "role": "Data and provenance",
+      "bytes": 265,
+      "sha256": "523dc72aa38b4ea3b7f1588809fd5603ff7aa837f3e702263759dfa5bfe88e4f",
+      "hash_basis": "LF-normalised text",
+      "format": "CSV",
+      "rows": 5,
+      "columns": 4,
+      "headers": [
+        "check",
+        "value",
+        "expected",
+        "passed"
+      ],
+      "preview": [
+        [
+          "required_u_projection",
+          "5103.122148265219",
+          "5103.122148265219",
+          "True"
+        ],
+        [
+          "visibility_origin_normalised",
+          "1.0",
+          "1.0",
+          "True"
+        ],
+        [
+          "hermitian_visibility",
+          "0.0",
+          "0.0",
+          "True"
+        ],
+        [
+          "resolved_source_attenuation",
+          "0.9894541775076499",
+          "<= 1",
+          "True"
+        ]
+      ]
+    },
+    {
+      "label": "Projected baseline",
+      "path": "data/projected_baseline.csv",
+      "role": "Data and provenance",
+      "bytes": 6745,
+      "sha256": "55c2820def19c04609a7ae13f43d09781f4dc3b5eeab7c4a33c1df96a99d65e6",
+      "hash_basis": "LF-normalised text",
+      "format": "CSV",
+      "rows": 73,
+      "columns": 5,
+      "headers": [
+        "hour_angle_hours",
+        "u_wavelengths",
+        "v_wavelengths",
+        "visibility_real",
+        "visibility_imaginary"
+      ],
+      "preview": [
+        [
+          "-6.0",
+          "-5714.285714285715",
+          "-1.4787374328627595e-13",
+          "0.9640942626302156",
+          "0.14691226849507522"
+        ],
+        [
+          "-5.833333333333333",
+          "-5708.84698046776",
+          "-105.33914095161447",
+          "0.9626590827077857",
+          "0.1500264760939205"
+        ],
+        [
+          "-5.666666666666667",
+          "-5692.541131952832",
+          "-210.47776286134203",
+          "0.9613331787608129",
+          "0.15286258131573194"
+        ],
+        [
+          "-5.5",
+          "-5665.399207850345",
+          "-315.2157283866895",
+          "0.9601261979510478",
+          "0.1554184274982137"
+        ]
+      ]
+    },
+    {
+      "label": "Eht m87 2017 metadata",
+      "path": "data/observations/eht_m87_2017_metadata.json",
+      "role": "Data and provenance",
+      "bytes": 3984,
+      "sha256": "913e262b731d963d4140edf0510de4aaf6925ffb4dc10ea78c5975af88a55386",
+      "hash_basis": "LF-normalised text",
+      "format": "JSON",
+      "keys": [
+        "dataset",
+        "officialRelease",
+        "sourceCsvBase",
+        "productFamily",
+        "days",
+        "bands",
+        "products"
+      ],
+      "arrays": {
+        "days": 4,
+        "bands": 2,
+        "processing": 4
+      }
+    },
+    {
+      "label": "SR1 M87 2017 095 hi hops netcal StokesI",
+      "path": "data/observations/SR1_M87_2017_095_hi_hops_netcal_StokesI.csv",
+      "role": "Data and provenance",
+      "bytes": 522380,
+      "sha256": "84d9255bec271d3822dc519606c881111712573c33df175915a838aa8af1775e",
+      "hash_basis": "LF-normalised text",
+      "format": "CSV",
+      "rows": 6459,
+      "columns": 3,
+      "headers": [
+        "#SRC:M87",
+        "DATE(MJD):57848",
+        "FREQ:229.0707GHz"
+      ],
+      "preview": [
+        [
+          "#time(UTC)",
+          "T1",
+          "T2",
+          "U(lambda)",
+          "V(lambda)",
+          "Iamp(Jy)",
+          "Iphase(d)"
+        ],
+        [
+          "00.76805556",
+          "AA",
+          "LM",
+          "1081709696.0000",
+          "-3833722368.0000",
+          "0.01429205",
+          "-118.9454"
+        ],
+        [
+          "00.76805556",
+          "AA",
+          "PV",
+          "-4399932928.0000",
+          "-4509480448.0000",
+          "0.13673432",
+          "5.8638"
+        ],
+        [
+          "00.76805556",
+          "AA",
+          "AP",
+          "834908.8125",
+          "-1722271.0000",
+          "1.11977953",
+          "58.1095"
+        ]
+      ]
+    },
+    {
+      "label": "SR1 M87 2017 095 lo hops netcal StokesI",
+      "path": "data/observations/SR1_M87_2017_095_lo_hops_netcal_StokesI.csv",
+      "role": "Data and provenance",
+      "bytes": 522024,
+      "sha256": "ced76b99f03cd487c25918f950f69ec1883947f77df6a7d06e1e8e5336e2b6c3",
+      "hash_basis": "LF-normalised text",
+      "format": "CSV",
+      "rows": 6454,
+      "columns": 3,
+      "headers": [
+        "#SRC:M87",
+        "DATE(MJD):57848",
+        "FREQ:227.0707GHz"
+      ],
+      "preview": [
+        [
+          "#time(UTC)",
+          "T1",
+          "T2",
+          "U(lambda)",
+          "V(lambda)",
+          "Iamp(Jy)",
+          "Iphase(d)"
+        ],
+        [
+          "00.76805556",
+          "AA",
+          "PV",
+          "-4361512960.0000",
+          "-4470103552.0000",
+          "0.15033433",
+          "172.4572"
+        ],
+        [
+          "00.76805556",
+          "AA",
+          "AP",
+          "827619.3125",
+          "-1707234.0000",
+          "1.12963699",
+          "135.1223"
+        ],
+        [
+          "00.76805556",
+          "AA",
+          "LM",
+          "1072227456.0000",
+          "-3800254720.0000",
+          "0.03032000",
+          "12.2844"
+        ]
+      ]
+    },
+    {
+      "label": "SR1 M87 2017 096 hi hops netcal StokesI",
+      "path": "data/observations/SR1_M87_2017_096_hi_hops_netcal_StokesI.csv",
+      "role": "Data and provenance",
+      "bytes": 733779,
+      "sha256": "ccf8923130ffdd78c2ca66ebc5de66389edd3949816a963e84a80d02e903949c",
+      "hash_basis": "LF-normalised text",
+      "format": "CSV",
+      "rows": 9082,
+      "columns": 3,
+      "headers": [
+        "#SRC:M87",
+        "DATE(MJD):57849",
+        "FREQ:229.0707GHz"
+      ],
+      "preview": [
+        [
+          "#time(UTC)",
+          "T1",
+          "T2",
+          "U(lambda)",
+          "V(lambda)",
+          "Iamp(Jy)",
+          "Iphase(d)"
+        ],
+        [
+          "00.86805555",
+          "AA",
+          "PV",
+          "-4435681280.0000",
+          "-4550657536.0000",
+          "0.11507094",
+          "9.6646"
+        ],
+        [
+          "00.86805555",
+          "AA",
+          "AP",
+          "823539.0000",
+          "-1714537.6250",
+          "1.10001429",
+          "46.4412"
+        ],
+        [
+          "00.86805555",
+          "AP",
+          "PV",
+          "-4436521472.0000",
+          "-4548964352.0000",
+          "0.12206572",
+          "-32.6707"
+        ]
+      ]
+    },
+    {
+      "label": "SR1 M87 2017 096 lo hops netcal StokesI",
+      "path": "data/observations/SR1_M87_2017_096_lo_hops_netcal_StokesI.csv",
+      "role": "Data and provenance",
+      "bytes": 699938,
+      "sha256": "d44b6e0f2d430eb4a725fb9b1e5965407405f9e38cb3b6f0b76ccd69c9771ba9",
+      "hash_basis": "LF-normalised text",
+      "format": "CSV",
+      "rows": 8646,
+      "columns": 3,
+      "headers": [
+        "#SRC:M87",
+        "DATE(MJD):57849",
+        "FREQ:227.0707GHz"
+      ],
+      "preview": [
+        [
+          "#time(UTC)",
+          "T1",
+          "T2",
+          "U(lambda)",
+          "V(lambda)",
+          "Iamp(Jy)",
+          "Iphase(d)"
+        ],
+        [
+          "00.86805555",
+          "AA",
+          "PV",
+          "-4396973056.0000",
+          "-4510950912.0000",
+          "0.13778746",
+          "178.1494"
+        ],
+        [
+          "00.87083334",
+          "AA",
+          "PV",
+          "-4397497344.0000",
+          "-4511639040.0000",
+          "0.13610664",
+          "-179.6852"
+        ],
+        [
+          "00.87361112",
+          "AA",
+          "PV",
+          "-4398009344.0000",
+          "-4512314368.0000",
+          "0.13498885",
+          "179.0204"
+        ]
+      ]
+    },
+    {
+      "label": "SR1 M87 2017 100 hi hops netcal StokesI",
+      "path": "data/observations/SR1_M87_2017_100_hi_hops_netcal_StokesI.csv",
+      "role": "Data and provenance",
+      "bytes": 211189,
+      "sha256": "13ea4e2e5b357b707380287dd247eb3e154d0d55c1dda4d97cf4510a6d4e144f",
+      "hash_basis": "LF-normalised text",
+      "format": "CSV",
+      "rows": 2611,
+      "columns": 3,
+      "headers": [
+        "#SRC:M87",
+        "DATE(MJD):57853",
+        "FREQ:229.0707GHz"
+      ],
+      "preview": [
+        [
+          "#time(UTC)",
+          "T1",
+          "T2",
+          "U(lambda)",
+          "V(lambda)",
+          "Iamp(Jy)",
+          "Iphase(d)"
+        ],
+        [
+          "02.15138894",
+          "AA",
+          "LM",
+          "1868288384.0000",
+          "-3689129984.0000",
+          "0.01103669",
+          "-122.7523"
+        ],
+        [
+          "02.15138894",
+          "AA",
+          "AZ",
+          "1900047104.0000",
+          "-4939025408.0000",
+          "0.14292954",
+          "141.7436"
+        ],
+        [
+          "02.15138894",
+          "AA",
+          "AP",
+          "646322.5000",
+          "-1649662.3750",
+          "1.14997319",
+          "95.5556"
+        ]
+      ]
+    },
+    {
+      "label": "SR1 M87 2017 100 lo hops netcal StokesI",
+      "path": "data/observations/SR1_M87_2017_100_lo_hops_netcal_StokesI.csv",
+      "role": "Data and provenance",
+      "bytes": 191978,
+      "sha256": "279ec613641074079f8fe9dd9e1ced6b33c121611a099761c32b030ced21a544",
+      "hash_basis": "LF-normalised text",
+      "format": "CSV",
+      "rows": 2368,
+      "columns": 3,
+      "headers": [
+        "#SRC:M87",
+        "DATE(MJD):57853",
+        "FREQ:227.0707GHz"
+      ],
+      "preview": [
+        [
+          "#time(UTC)",
+          "T1",
+          "T2",
+          "U(lambda)",
+          "V(lambda)",
+          "Iamp(Jy)",
+          "Iphase(d)"
+        ],
+        [
+          "02.15138894",
+          "AA",
+          "PV",
+          "-4324429824.0000",
+          "-4895891968.0000",
+          "0.13815325",
+          "-129.2884"
+        ],
+        [
+          "02.15138894",
+          "AA",
+          "AZ",
+          "1883480960.0000",
+          "-4895899136.0000",
+          "0.14518396",
+          "70.3506"
+        ],
+        [
+          "02.15138894",
+          "AA",
+          "AP",
+          "640688.7500",
+          "-1635261.5000",
+          "1.17000681",
+          "-130.7854"
+        ]
+      ]
+    },
+    {
+      "label": "SR1 M87 2017 101 hi hops netcal StokesI",
+      "path": "data/observations/SR1_M87_2017_101_hi_hops_netcal_StokesI.csv",
+      "role": "Data and provenance",
+      "bytes": 652377,
+      "sha256": "b5e9542c5712c0608c731bd6d5cf57a3f6f8f5369f5e9492e76b7ea0f551f57b",
+      "hash_basis": "LF-normalised text",
+      "format": "CSV",
+      "rows": 8059,
+      "columns": 3,
+      "headers": [
+        "#SRC:M87",
+        "DATE(MJD):57854",
+        "FREQ:229.0707GHz"
+      ],
+      "preview": [
+        [
+          "#time(UTC)",
+          "T1",
+          "T2",
+          "U(lambda)",
+          "V(lambda)",
+          "Iamp(Jy)",
+          "Iphase(d)"
+        ],
+        [
+          "00.53472224",
+          "AA",
+          "PV",
+          "-4434611200.0000",
+          "-4549262336.0000",
+          "0.12308612",
+          "13.8326"
+        ],
+        [
+          "00.53472224",
+          "AA",
+          "AP",
+          "823955.3125",
+          "-1714801.3750",
+          "1.19983408",
+          "-124.7566"
+        ],
+        [
+          "00.53472224",
+          "AP",
+          "PV",
+          "-4435451392.0000",
+          "-4547569152.0000",
+          "0.12910983",
+          "124.6757"
+        ]
+      ]
+    },
+    {
+      "label": "SR1 M87 2017 101 lo hops netcal StokesI",
+      "path": "data/observations/SR1_M87_2017_101_lo_hops_netcal_StokesI.csv",
+      "role": "Data and provenance",
+      "bytes": 602825,
+      "sha256": "3695aeecaa5eef5c445b5c88c34d96820349341471a9cf0558ad6c420864363d",
+      "hash_basis": "LF-normalised text",
+      "format": "CSV",
+      "rows": 7448,
+      "columns": 3,
+      "headers": [
+        "#SRC:M87",
+        "DATE(MJD):57854",
+        "FREQ:227.0707GHz"
+      ],
+      "preview": [
+        [
+          "#time(UTC)",
+          "T1",
+          "T2",
+          "U(lambda)",
+          "V(lambda)",
+          "Iamp(Jy)",
+          "Iphase(d)"
+        ],
+        [
+          "00.53472224",
+          "AA",
+          "PV",
+          "-4395897344.0000",
+          "-4509549056.0000",
+          "0.15549293",
+          "176.6557"
+        ],
+        [
+          "00.53749998",
+          "AA",
+          "PV",
+          "-4396411392.0000",
+          "-4510217216.0000",
+          "0.16664173",
+          "176.7511"
+        ],
+        [
+          "00.54027776",
+          "AA",
+          "PV",
+          "-4396951040.0000",
+          "-4510922752.0000",
+          "0.15441983",
+          "178.5934"
+        ]
+      ]
+    }
+  ]
+}
