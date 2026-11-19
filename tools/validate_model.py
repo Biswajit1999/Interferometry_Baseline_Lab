@@ -26,7 +26,7 @@ def main() -> None:
     ]
     output = Path(__file__).resolve().parents[1] / "data" / "validation_summary.csv"
     with output.open("w", newline="", encoding="utf-8") as handle:
-        writer = csv.DictWriter(handle, fieldnames=["check", "value", "expected", "passed"])
+        writer = csv.DictWriter(handle, fieldnames=["check", "value", "expected", "passed"], lineterminator="\n")
         writer.writeheader()
         writer.writerows(rows)
     failures = [row["check"] for row in rows if not row["passed"]]

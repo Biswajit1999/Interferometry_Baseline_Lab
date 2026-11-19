@@ -33,6 +33,19 @@ def check_csv(path: Path) -> int:
     return rows
 
 
+def matches_archive_digest(content: bytes, size: int, digest: str) -> bool:
+    if len(content) == size and hashlib.sha256(content).hexdigest() == digest:
+        return True
+    # Git can store the release's CRLF CSV as LF. Accept that representation
+    # only when restoring its line endings reproduces the exact archive bytes.
+    archived = content.replace(b"\n", b"\r\n")
+    return (
+        b"\r" not in content
+        and len(archived) == size
+        and hashlib.sha256(archived).hexdigest() == digest
+    )
+
+
 def main() -> None:
     metadata = json.loads((OBSERVATIONS / "eht_m87_2017_metadata.json").read_text(encoding="utf-8"))
     if metadata["officialRelease"] != "https://github.com/eventhorizontelescope/2019-D01-01":
@@ -43,7 +56,7 @@ def main() -> None:
         rows = check_csv(path)
         if rows != product["visibilityRows"]:
             raise ValueError(f"{key} row count differs from acquisition metadata")
-        if hashlib.sha256(path.read_bytes()).hexdigest() != product["sha256"]:
+        if not matches_archive_digest(path.read_bytes(), product["bytes"], product["sha256"]):
             raise ValueError(f"{key} local CSV digest differs from acquisition metadata")
         total += rows
     print(f"Validated local EHT visibility products: {len(metadata['products'])} CSV files / {total} visibility rows")
