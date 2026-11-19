@@ -1,0 +1,421 @@
+{
+  "schema": 1,
+  "project": "Interferometry Baseline Lab",
+  "tables": [
+    {
+      "path": "data/m87-april05-high-baseline-summary.csv",
+      "label": "M87 april05 high baseline summary",
+      "role": "Data and provenance",
+      "rows": 15,
+      "width_mismatches": 0,
+      "columns": [
+        {
+          "name": "baseline_min_glambda",
+          "blank": 0,
+          "text": 0,
+          "finite": 15,
+          "nonfinite": 0,
+          "minimum": 0.0,
+          "maximum": 8.0
+        },
+        {
+          "name": "baseline_max_glambda",
+          "blank": 0,
+          "text": 0,
+          "finite": 15,
+          "nonfinite": 0,
+          "minimum": 0.5,
+          "maximum": 8.5
+        },
+        {
+          "name": "sample_count",
+          "blank": 0,
+          "text": 0,
+          "finite": 15,
+          "nonfinite": 0,
+          "minimum": 24.0,
+          "maximum": 915.0
+        },
+        {
+          "name": "median_baseline_glambda",
+          "blank": 0,
+          "text": 0,
+          "finite": 15,
+          "nonfinite": 0,
+          "minimum": 0.00012128135726857321,
+          "maximum": 8.332133527704455
+        },
+        {
+          "name": "median_amplitude_jy",
+          "blank": 0,
+          "text": 0,
+          "finite": 15,
+          "nonfinite": 0,
+          "minimum": 0.05047993,
+          "maximum": 1.12393039
+        },
+        {
+          "name": "p16_amplitude_jy",
+          "blank": 0,
+          "text": 0,
+          "finite": 15,
+          "nonfinite": 0,
+          "minimum": 0.027729020400000002,
+          "maximum": 1.1200033424
+        },
+        {
+          "name": "p84_amplitude_jy",
+          "blank": 0,
+          "text": 0,
+          "finite": 15,
+          "nonfinite": 0,
+          "minimum": 0.0731565268,
+          "maximum": 1.125372386
+        },
+        {
+          "name": "median_released_sigma_jy",
+          "blank": 0,
+          "text": 0,
+          "finite": 15,
+          "nonfinite": 0,
+          "minimum": 0.00492368,
+          "maximum": 0.11661569999999999
+        }
+      ]
+    },
+    {
+      "path": "data/validation_summary.csv",
+      "label": "Validation summary",
+      "role": "Data and provenance",
+      "rows": 5,
+      "width_mismatches": 0,
+      "columns": [
+        {
+          "name": "check",
+          "blank": 0,
+          "text": 5,
+          "finite": 0,
+          "nonfinite": 0
+        },
+        {
+          "name": "value",
+          "blank": 0,
+          "text": 0,
+          "finite": 5,
+          "nonfinite": 0,
+          "minimum": 0.0,
+          "maximum": 5103.122148265219
+        },
+        {
+          "name": "expected",
+          "blank": 0,
+          "text": 1,
+          "finite": 4,
+          "nonfinite": 0
+        },
+        {
+          "name": "passed",
+          "blank": 0,
+          "text": 5,
+          "finite": 0,
+          "nonfinite": 0
+        }
+      ]
+    },
+    {
+      "path": "data/projected_baseline.csv",
+      "label": "Projected baseline",
+      "role": "Data and provenance",
+      "rows": 73,
+      "width_mismatches": 0,
+      "columns": [
+        {
+          "name": "hour_angle_hours",
+          "blank": 0,
+          "text": 0,
+          "finite": 73,
+          "nonfinite": 0,
+          "minimum": -6.0,
+          "maximum": 6.0
+        },
+        {
+          "name": "u_wavelengths",
+          "blank": 0,
+          "text": 0,
+          "finite": 73,
+          "nonfinite": 0,
+          "minimum": -5714.285714285715,
+          "maximum": 5714.285714285715
+        },
+        {
+          "name": "v_wavelengths",
+          "blank": 0,
+          "text": 0,
+          "finite": 73,
+          "nonfinite": 0,
+          "minimum": -2414.96149566114,
+          "maximum": -1.4787374328627595e-13
+        },
+        {
+          "name": "visibility_real",
+          "blank": 0,
+          "text": 0,
+          "finite": 73,
+          "nonfinite": 0,
+          "minimum": 0.9555908488205598,
+          "maximum": 0.998598697234523
+        },
+        {
+          "name": "visibility_imaginary",
+          "blank": 0,
+          "text": 0,
+          "finite": 73,
+          "nonfinite": 0,
+          "minimum": -0.14691226849507522,
+          "maximum": 0.16561196766706887
+        }
+      ]
+    },
+    {
+      "path": "data/observations/SR1_M87_2017_095_hi_hops_netcal_StokesI.csv",
+      "label": "SR1 M87 2017 095 hi hops netcal StokesI",
+      "role": "Data and provenance",
+      "rows": 6459,
+      "width_mismatches": 6459,
+      "columns": [
+        {
+          "name": "#SRC:M87",
+          "blank": 0,
+          "text": 1,
+          "finite": 6458,
+          "nonfinite": 0
+        },
+        {
+          "name": "DATE(MJD):57848",
+          "blank": 0,
+          "text": 6459,
+          "finite": 0,
+          "nonfinite": 0
+        },
+        {
+          "name": "FREQ:229.0707GHz",
+          "blank": 0,
+          "text": 6459,
+          "finite": 0,
+          "nonfinite": 0
+        }
+      ]
+    },
+    {
+      "path": "data/observations/SR1_M87_2017_095_lo_hops_netcal_StokesI.csv",
+      "label": "SR1 M87 2017 095 lo hops netcal StokesI",
+      "role": "Data and provenance",
+      "rows": 6454,
+      "width_mismatches": 6454,
+      "columns": [
+        {
+          "name": "#SRC:M87",
+          "blank": 0,
+          "text": 1,
+          "finite": 6453,
+          "nonfinite": 0
+        },
+        {
+          "name": "DATE(MJD):57848",
+          "blank": 0,
+          "text": 6454,
+          "finite": 0,
+          "nonfinite": 0
+        },
+        {
+          "name": "FREQ:227.0707GHz",
+          "blank": 0,
+          "text": 6454,
+          "finite": 0,
+          "nonfinite": 0
+        }
+      ]
+    },
+    {
+      "path": "data/observations/SR1_M87_2017_096_hi_hops_netcal_StokesI.csv",
+      "label": "SR1 M87 2017 096 hi hops netcal StokesI",
+      "role": "Data and provenance",
+      "rows": 9082,
+      "width_mismatches": 9082,
+      "columns": [
+        {
+          "name": "#SRC:M87",
+          "blank": 0,
+          "text": 1,
+          "finite": 9081,
+          "nonfinite": 0
+        },
+        {
+          "name": "DATE(MJD):57849",
+          "blank": 0,
+          "text": 9082,
+          "finite": 0,
+          "nonfinite": 0
+        },
+        {
+          "name": "FREQ:229.0707GHz",
+          "blank": 0,
+          "text": 9082,
+          "finite": 0,
+          "nonfinite": 0
+        }
+      ]
+    },
+    {
+      "path": "data/observations/SR1_M87_2017_096_lo_hops_netcal_StokesI.csv",
+      "label": "SR1 M87 2017 096 lo hops netcal StokesI",
+      "role": "Data and provenance",
+      "rows": 8646,
+      "width_mismatches": 8646,
+      "columns": [
+        {
+          "name": "#SRC:M87",
+          "blank": 0,
+          "text": 1,
+          "finite": 8645,
+          "nonfinite": 0
+        },
+        {
+          "name": "DATE(MJD):57849",
+          "blank": 0,
+          "text": 8646,
+          "finite": 0,
+          "nonfinite": 0
+        },
+        {
+          "name": "FREQ:227.0707GHz",
+          "blank": 0,
+          "text": 8646,
+          "finite": 0,
+          "nonfinite": 0
+        }
+      ]
+    },
+    {
+      "path": "data/observations/SR1_M87_2017_100_hi_hops_netcal_StokesI.csv",
+      "label": "SR1 M87 2017 100 hi hops netcal StokesI",
+      "role": "Data and provenance",
+      "rows": 2611,
+      "width_mismatches": 2611,
+      "columns": [
+        {
+          "name": "#SRC:M87",
+          "blank": 0,
+          "text": 1,
+          "finite": 2610,
+          "nonfinite": 0
+        },
+        {
+          "name": "DATE(MJD):57853",
+          "blank": 0,
+          "text": 2611,
+          "finite": 0,
+          "nonfinite": 0
+        },
+        {
+          "name": "FREQ:229.0707GHz",
+          "blank": 0,
+          "text": 2611,
+          "finite": 0,
+          "nonfinite": 0
+        }
+      ]
+    },
+    {
+      "path": "data/observations/SR1_M87_2017_100_lo_hops_netcal_StokesI.csv",
+      "label": "SR1 M87 2017 100 lo hops netcal StokesI",
+      "role": "Data and provenance",
+      "rows": 2368,
+      "width_mismatches": 2368,
+      "columns": [
+        {
+          "name": "#SRC:M87",
+          "blank": 0,
+          "text": 1,
+          "finite": 2367,
+          "nonfinite": 0
+        },
+        {
+          "name": "DATE(MJD):57853",
+          "blank": 0,
+          "text": 2368,
+          "finite": 0,
+          "nonfinite": 0
+        },
+        {
+          "name": "FREQ:227.0707GHz",
+          "blank": 0,
+          "text": 2368,
+          "finite": 0,
+          "nonfinite": 0
+        }
+      ]
+    },
+    {
+      "path": "data/observations/SR1_M87_2017_101_hi_hops_netcal_StokesI.csv",
+      "label": "SR1 M87 2017 101 hi hops netcal StokesI",
+      "role": "Data and provenance",
+      "rows": 8059,
+      "width_mismatches": 8059,
+      "columns": [
+        {
+          "name": "#SRC:M87",
+          "blank": 0,
+          "text": 1,
+          "finite": 8058,
+          "nonfinite": 0
+        },
+        {
+          "name": "DATE(MJD):57854",
+          "blank": 0,
+          "text": 8059,
+          "finite": 0,
+          "nonfinite": 0
+        },
+        {
+          "name": "FREQ:229.0707GHz",
+          "blank": 0,
+          "text": 8059,
+          "finite": 0,
+          "nonfinite": 0
+        }
+      ]
+    },
+    {
+      "path": "data/observations/SR1_M87_2017_101_lo_hops_netcal_StokesI.csv",
+      "label": "SR1 M87 2017 101 lo hops netcal StokesI",
+      "role": "Data and provenance",
+      "rows": 7448,
+      "width_mismatches": 7448,
+      "columns": [
+        {
+          "name": "#SRC:M87",
+          "blank": 0,
+          "text": 1,
+          "finite": 7447,
+          "nonfinite": 0
+        },
+        {
+          "name": "DATE(MJD):57854",
+          "blank": 0,
+          "text": 7448,
+          "finite": 0,
+          "nonfinite": 0
+        },
+        {
+          "name": "FREQ:227.0707GHz",
+          "blank": 0,
+          "text": 7448,
+          "finite": 0,
+          "nonfinite": 0
+        }
+      ]
+    }
+  ],
+  "excluded": []
+}
