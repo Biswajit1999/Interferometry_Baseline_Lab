@@ -114,3 +114,25 @@ footer {
 }
 footer span { color:var(--accent); text-shadow:0 0 12px rgba(var(--accent-rgb),.36); }
 @media (max-width:960px) { .topbar { padding-top:1.95rem; } }
+.baseline-evidence {
+  margin: 1rem 0;
+  padding: clamp(1rem, 3vw, 1.8rem);
+}
+.baseline-evidence figure {
+  max-width: 1034px;
+  margin: .8rem 0;
+}
+.baseline-evidence img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.baseline-evidence figcaption {
+  padding-top: .7rem;
+  max-width: 85ch;
+  line-height: 1.55;
+}
+.baseline-evidence a {
+  color: inherit;
+  text-underline-offset: .2em;
+}
