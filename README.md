@@ -38,6 +38,10 @@ dirty image = IFFT2 { weights x measured V(u,v) }
 The `u-v` display, visibility-amplitude track, dirty beam and dirty image are therefore derived
 from published EHT measurements. No simulated data silently replace a failed network request.
 
+![April 5 EHT high-band Fourier-plane coverage and binned Stokes-I visibility amplitudes for M87](assets/m87-april05-high-baselines.png)
+
+The left panel shows the released `u-v` samples for 5 April 2017 in the high band, before adding their conjugates. The right panel groups amplitudes by projected baseline length. Bars show the central 68% of the released amplitudes within each bin, which can include different baseline orientations. The [downloadable table](data/m87-april05-high-baseline-summary.csv) also reports the median of the individual released statistical uncertainties. Run `python tools/plot_released_baselines.py` with NumPy and Matplotlib to regenerate the plot and table.
+
 ## Optional Ring Reference
 
 The `MODEL REFERENCE` switch enables a separate asymmetric annular brightness model in the
@@ -90,6 +94,8 @@ For offline use, retrieve and validate the unchanged official CSV products:
 python tools/fetch_eht_observations.py
 python tools/validate_observations.py
 ```
+
+The acquisition manifest records the byte count and SHA-256 of the official CRLF transfer. A Git checkout may contain LF line endings. Validation accepts that copy only if restoring CRLF reproduces the pinned byte count and SHA-256 exactly.
 
 ## Export
 
